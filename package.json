@@ -3,11 +3,27 @@
   "main": "dist/index.js",
   "version": "0.0.2",
   "type": "module",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./line-intersections": {
+      "import": "./dist/line-intersections.js",
+      "types": "./dist/line-intersections.d.ts"
+    },
+    "./nearest-box": {
+      "import": "./dist/nearest-box.js",
+      "types": "./dist/nearest-box.d.ts"
+    }
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup-node src/index.ts --format esm --dts --sourcemap"
+    "build": "tsup-node src --format esm --dts --sourcemap"
   },
   "devDependencies": {
     "@types/bun": "latest",
