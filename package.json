@@ -26,6 +26,7 @@
     "build": "tsup-node src --format esm --dts --sourcemap"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.1",
     "@types/bun": "latest",
     "tsup": "^8.2.4"
   },
