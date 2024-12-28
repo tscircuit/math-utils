@@ -1,7 +1,7 @@
 {
   "name": "@tscircuit/math-utils",
   "main": "dist/index.js",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "type": "module",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
