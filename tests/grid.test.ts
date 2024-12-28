@@ -10,9 +10,9 @@ describe("grid", () => {
     expect(cells[3].index).toBe(3)
 
     // Check first cell (top-left in cartesian)
-    expect(cells[0].center).toEqual({ x: 0.5, y: 1.5 })
-    expect(cells[0].topLeft).toEqual({ x: 0, y: 2 })
-    expect(cells[0].bottomRight).toEqual({ x: 1, y: 1 })
+    expect(cells[0].center).toEqual({ x: -0.5, y: 0.5 })
+    expect(cells[0].topLeft).toEqual({ x: -1, y: 1 })
+    expect(cells[0].bottomRight).toEqual({ x: 0, y: 0 })
   })
 
   test("2x3 grid with custom spacing", () => {
@@ -55,7 +55,7 @@ describe("grid", () => {
       offsetY: 20,
     })
 
-    expect(cells[0].center).toEqual({ x: 10.5, y: 20.5 })
+    expect(cells[0].center).toEqual({ x: 10, y: 20 })
   })
 
   test("up-is-negative coordinate system", () => {
@@ -78,5 +78,33 @@ describe("grid", () => {
 
     // In cartesian, y increases upward
     expect(cells[0].center.y).toBeGreaterThan(cells[1].center.y)
+  })
+
+  test("centered grid (default)", () => {
+    const cells = grid({
+      rows: 2,
+      cols: 2,
+      xSpacing: 10,
+      ySpacing: 10,
+    })
+
+    // For a 2x2 grid with 10 unit spacing, the total size is 20x20
+    // When centered, it should go from -10 to +10 in both dimensions
+    expect(cells[0].center.x).toBe(-5)
+    expect(cells[0].center.y).toBe(5)
+  })
+
+  test("non-centered grid", () => {
+    const cells = grid({
+      rows: 2,
+      cols: 2,
+      xSpacing: 10,
+      ySpacing: 10,
+      centered: false,
+    })
+
+    // When not centered, it should start from 0,0
+    expect(cells[0].center.x).toBe(5)
+    expect(cells[0].center.y).toBe(15)
   })
 })

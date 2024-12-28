@@ -17,6 +17,7 @@ export type GridOptions = {
   offsetX?: number
   offsetY?: number
   yDirection?: "cartesian" | "up-is-negative"
+  centered?: boolean
 }
 
 export function grid({
@@ -29,10 +30,22 @@ export function grid({
   offsetX = 0,
   offsetY = 0,
   yDirection = "cartesian",
+  centered = true,
 }: GridOptions): GridCellPositions[] {
+  // Set default spacing if neither spacing nor dimensions are specified
+  const effectiveXSpacing = xSpacing ?? 1
+  const effectiveYSpacing = ySpacing ?? 1
+
   // Calculate cell dimensions
-  const cellWidth = width ? width / cols : (xSpacing ?? 1)
-  const cellHeight = height ? height / rows : (ySpacing ?? 1)
+  const totalWidth = width ?? cols * effectiveXSpacing
+  const totalHeight = height ?? rows * effectiveYSpacing
+
+  // Calculate centering offsets if needed
+  const centeringOffsetX = centered ? -totalWidth / 2 : 0
+  const centeringOffsetY = centered ? -totalHeight / 2 : 0
+
+  const cellWidth = width ? width / cols : effectiveXSpacing
+  const cellHeight = height ? height / rows : effectiveYSpacing
 
   const cells: GridCellPositions[] = []
 
@@ -41,14 +54,18 @@ export function grid({
       const index = row * cols + col
 
       // Calculate center position
-      const centerX = offsetX + col * cellWidth + cellWidth / 2
+      const centerX =
+        offsetX + centeringOffsetX + col * cellWidth + cellWidth / 2
       const rawCenterY = offsetY + row * cellHeight + cellHeight / 2
 
       // Adjust Y coordinate based on yDirection
       const centerY =
         yDirection === "cartesian"
-          ? offsetY + (rows - 1 - row) * cellHeight + cellHeight / 2
-          : rawCenterY
+          ? offsetY +
+            centeringOffsetY +
+            (rows - 1 - row) * cellHeight +
+            cellHeight / 2
+          : offsetY + centeringOffsetY + row * cellHeight + cellHeight / 2
 
       cells.push({
         index,
