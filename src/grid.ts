@@ -1,6 +1,6 @@
 import type { Point } from "./common"
 
-export type GridCell = {
+export type GridCellPositions = {
   index: number
   center: Point
   topLeft: Point
@@ -29,25 +29,26 @@ export function grid({
   offsetX = 0,
   offsetY = 0,
   yDirection = "cartesian",
-}: GridOptions): GridCell[] {
+}: GridOptions): GridCellPositions[] {
   // Calculate cell dimensions
-  const cellWidth = width ? width / cols : xSpacing ?? 1
-  const cellHeight = height ? height / rows : ySpacing ?? 1
+  const cellWidth = width ? width / cols : (xSpacing ?? 1)
+  const cellHeight = height ? height / rows : (ySpacing ?? 1)
 
-  const cells: GridCell[] = []
-  
+  const cells: GridCellPositions[] = []
+
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       const index = row * cols + col
-      
+
       // Calculate center position
       const centerX = offsetX + col * cellWidth + cellWidth / 2
       const rawCenterY = offsetY + row * cellHeight + cellHeight / 2
-      
+
       // Adjust Y coordinate based on yDirection
-      const centerY = yDirection === "cartesian" 
-        ? offsetY + (rows - 1 - row) * cellHeight + cellHeight / 2
-        : rawCenterY
+      const centerY =
+        yDirection === "cartesian"
+          ? offsetY + (rows - 1 - row) * cellHeight + cellHeight / 2
+          : rawCenterY
 
       cells.push({
         index,
