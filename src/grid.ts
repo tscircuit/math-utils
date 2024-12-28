@@ -39,11 +39,11 @@ export function grid({
   // Calculate cell dimensions
   const totalWidth = width ?? cols * effectiveXSpacing
   const totalHeight = height ?? rows * effectiveYSpacing
-  
+
   // Calculate centering offsets if needed
   const centeringOffsetX = centered ? -totalWidth / 2 : 0
   const centeringOffsetY = centered ? -totalHeight / 2 : 0
-  
+
   const cellWidth = width ? width / cols : effectiveXSpacing
   const cellHeight = height ? height / rows : effectiveYSpacing
 
@@ -54,13 +54,17 @@ export function grid({
       const index = row * cols + col
 
       // Calculate center position
-      const centerX = offsetX + centeringOffsetX + col * cellWidth + cellWidth / 2
+      const centerX =
+        offsetX + centeringOffsetX + col * cellWidth + cellWidth / 2
       const rawCenterY = offsetY + row * cellHeight + cellHeight / 2
 
       // Adjust Y coordinate based on yDirection
       const centerY =
         yDirection === "cartesian"
-          ? offsetY + centeringOffsetY + (rows - 1 - row) * cellHeight + cellHeight / 2
+          ? offsetY +
+            centeringOffsetY +
+            (rows - 1 - row) * cellHeight +
+            cellHeight / 2
           : offsetY + centeringOffsetY + row * cellHeight + cellHeight / 2
 
       cells.push({
