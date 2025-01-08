@@ -2,6 +2,8 @@ import type { Point } from "./common"
 
 export type GridCellPositions = {
   index: number
+  row: number
+  col: number
   center: Point
   topLeft: Point
   bottomRight: Point
@@ -78,6 +80,8 @@ export function grid({
           x: centerX + cellWidth / 2,
           y: centerY - cellHeight / 2,
         },
+        row,
+        col,
       })
     }
   }
