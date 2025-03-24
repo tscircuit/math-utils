@@ -1,5 +1,9 @@
-import { expect, test, describe } from "bun:test"
-import { segmentToSegmentMinDistance } from "../src/segment-distance"
+import { describe, expect, test } from "bun:test"
+import {
+  segmentToSegmentMinDistance,
+  segmentToBoundsMinDistance,
+  segmentToBoxMinDistance,
+} from "../src/segment-distance"
 
 describe("segmentToSegmentMinDistance", () => {
   test("intersecting segments return distance 0", () => {
@@ -50,5 +54,65 @@ describe("segmentToSegmentMinDistance", () => {
     expect(segmentToSegmentMinDistance(a, b, u, v)).toBeCloseTo(
       expectedDistance,
     )
+  })
+})
+
+describe("segmentToBoundsMinDistance", () => {
+  test("segment intersects bounds returns distance 0", () => {
+    const a = { x: 0, y: 5 }
+    const b = { x: 10, y: 5 }
+    const bounds = { minX: 5, minY: 0, maxX: 15, maxY: 10 }
+    expect(segmentToBoundsMinDistance(a, b, bounds)).toBe(0)
+  })
+
+  test("segment inside bounds returns distance 0", () => {
+    const a = { x: 6, y: 5 }
+    const b = { x: 10, y: 5 }
+    const bounds = { minX: 5, minY: 0, maxX: 15, maxY: 10 }
+    expect(segmentToBoundsMinDistance(a, b, bounds)).toBe(0)
+  })
+
+  test("segment outside bounds returns correct distance", () => {
+    const a = { x: 0, y: 15 }
+    const b = { x: 10, y: 15 }
+    const bounds = { minX: 5, minY: 0, maxX: 15, maxY: 10 }
+    expect(segmentToBoundsMinDistance(a, b, bounds)).toBe(5)
+  })
+
+  test("segment with one point inside bounds returns distance 0", () => {
+    const a = { x: 6, y: 5 }
+    const b = { x: 20, y: 5 }
+    const bounds = { minX: 5, minY: 0, maxX: 15, maxY: 10 }
+    expect(segmentToBoundsMinDistance(a, b, bounds)).toBe(0)
+  })
+})
+
+describe("segmentToBoxMinDistance", () => {
+  test("segment intersects box returns distance 0", () => {
+    const a = { x: 0, y: 5 }
+    const b = { x: 10, y: 5 }
+    const box = { center: { x: 10, y: 5 }, width: 10, height: 10 }
+    expect(segmentToBoxMinDistance(a, b, box)).toBe(0)
+  })
+
+  test("segment inside box returns distance 0", () => {
+    const a = { x: 6, y: 5 }
+    const b = { x: 10, y: 5 }
+    const box = { center: { x: 10, y: 5 }, width: 10, height: 10 }
+    expect(segmentToBoxMinDistance(a, b, box)).toBe(0)
+  })
+
+  test("segment outside box returns correct distance", () => {
+    const a = { x: 0, y: 15 }
+    const b = { x: 10, y: 15 }
+    const box = { center: { x: 10, y: 5 }, width: 10, height: 10 }
+    expect(segmentToBoxMinDistance(a, b, box)).toBe(5)
+  })
+
+  test("segment with one point inside box returns distance 0", () => {
+    const a = { x: 6, y: 5 }
+    const b = { x: 20, y: 5 }
+    const box = { center: { x: 10, y: 5 }, width: 10, height: 10 }
+    expect(segmentToBoxMinDistance(a, b, box)).toBe(0)
   })
 })
