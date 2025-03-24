@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test"
 import {
-  findNearestPointsBetweenBoxSets,
   type BoxSet,
+  findNearestPointsBetweenBoxSets,
 } from "../src/nearest-box"
 
 test("findNearestPointsBetweenBoxSets", () => {

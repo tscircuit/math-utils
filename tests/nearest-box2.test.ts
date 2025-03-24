@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { findNearestPointsBetweenBoxSets } from "../src/nearest-box"
 const reproData = {
   goalBoxesA: [
