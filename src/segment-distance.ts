@@ -150,3 +150,43 @@ export function segmentToBoxMinDistance(
 
   return segmentToBoundsMinDistance(a, b, bounds)
 }
+
+/**
+ * Returns the minimum distance from a line segment to a circle.
+ */
+export function segmentToCircleMinDistance(
+  a: Point,
+  b: Point,
+  circle: { x: number; y: number; radius: number },
+): number {
+  // Calculate the distance from the circle center to the line segment
+  const circleCenter = { x: circle.x, y: circle.y }
+
+  // Handle degenerate case: segment of zero length (point to circle)
+  if (a.x === b.x && a.y === b.y) {
+    return Math.max(0, distance(a, circleCenter) - circle.radius)
+  }
+
+  // Vector from a to b
+  const ab = { x: b.x - a.x, y: b.y - a.y }
+  // Vector from a to circle center
+  const ac = { x: circleCenter.x - a.x, y: circleCenter.y - a.y }
+
+  // Length of segment ab squared
+  const abLengthSq = ab.x * ab.x + ab.y * ab.y
+
+  // Calculate projection of ac onto ab, normalized by the length of ab
+  const t = Math.max(0, Math.min(1, (ab.x * ac.x + ab.y * ac.y) / abLengthSq))
+
+  // Find the closest point on the segment to the circle center
+  const closestPoint = {
+    x: a.x + t * ab.x,
+    y: a.y + t * ab.y,
+  }
+
+  // Calculate distance from closest point to circle center
+  const distToCenter = distance(closestPoint, circleCenter)
+
+  // Return the distance to the circle (subtract radius from distance to center)
+  return Math.max(0, distToCenter - circle.radius)
+}

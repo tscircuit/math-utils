@@ -1,8 +1,9 @@
 import { describe, expect, test } from "bun:test"
 import {
-  segmentToSegmentMinDistance,
   segmentToBoundsMinDistance,
   segmentToBoxMinDistance,
+  segmentToCircleMinDistance,
+  segmentToSegmentMinDistance,
 } from "../src/segment-distance"
 
 describe("segmentToSegmentMinDistance", () => {
@@ -114,5 +115,42 @@ describe("segmentToBoxMinDistance", () => {
     const b = { x: 20, y: 5 }
     const box = { center: { x: 10, y: 5 }, width: 10, height: 10 }
     expect(segmentToBoxMinDistance(a, b, box)).toBe(0)
+  })
+})
+
+describe("segmentToCircleMinDistance", () => {
+  test("segment intersects circle returns distance 0", () => {
+    const a = { x: 0, y: 0 }
+    const b = { x: 10, y: 0 }
+    const circle = { x: 5, y: 0, radius: 2 }
+    expect(segmentToCircleMinDistance(a, b, circle)).toBe(0)
+  })
+
+  test("segment outside circle returns correct distance", () => {
+    const a = { x: 0, y: 5 }
+    const b = { x: 10, y: 5 }
+    const circle = { x: 5, y: 0, radius: 2 }
+    expect(segmentToCircleMinDistance(a, b, circle)).toBe(3)
+  })
+
+  test("segment endpoint inside circle returns distance 0", () => {
+    const a = { x: 4, y: 0 }
+    const b = { x: 10, y: 0 }
+    const circle = { x: 5, y: 0, radius: 2 }
+    expect(segmentToCircleMinDistance(a, b, circle)).toBe(0)
+  })
+
+  test("handles degenerate case (point to circle)", () => {
+    const a = { x: 10, y: 0 }
+    const b = { x: 10, y: 0 } // Zero-length segment (a point)
+    const circle = { x: 5, y: 0, radius: 2 }
+    expect(segmentToCircleMinDistance(a, b, circle)).toBe(3)
+  })
+
+  test("closest point is on the segment", () => {
+    const a = { x: 0, y: 5 }
+    const b = { x: 10, y: 5 }
+    const circle = { x: 5, y: 10, radius: 2 }
+    expect(segmentToCircleMinDistance(a, b, circle)).toBe(3)
   })
 })
