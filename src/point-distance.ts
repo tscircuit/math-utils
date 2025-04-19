@@ -7,10 +7,7 @@ import type { Box } from "./nearest-box"
  * Returns the minimum distance from a point to a box.
  * If the point is inside the box, the distance is 0.
  */
-export function pointToBoxDistance(
-  p: Point,
-  box: Box,
-): number {
+export function pointToBoxDistance(p: Point, box: Box): number {
   const halfWidth = box.width / 2
   const halfHeight = box.height / 2
   const minX = box.center.x - halfWidth
@@ -35,10 +32,7 @@ export function pointToBoxDistance(
  * Returns the minimum distance from a point to a bounds rectangle.
  * If the point is inside the bounds, the distance is 0.
  */
-export function pointToBoundsDistance(
-  p: Point,
-  bounds: Bounds,
-): number {
+export function pointToBoundsDistance(p: Point, bounds: Bounds): number {
   // Check if the point is inside the bounds
   if (
     p.x >= bounds.minX &&

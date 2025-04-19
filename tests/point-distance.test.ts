@@ -1,7 +1,10 @@
 import { describe, expect, test } from "bun:test"
 import type { Box } from "../src/nearest-box"
 import type { Point, Bounds } from "../src/common"
-import { pointToBoxDistance, pointToBoundsDistance } from "../src/point-distance"
+import {
+  pointToBoxDistance,
+  pointToBoundsDistance,
+} from "../src/point-distance"
 
 describe("pointToBoxDistance", () => {
   const box: Box = { center: { x: 5, y: 5 }, width: 10, height: 10 } // Box from (0,0) to (10,10)
