@@ -190,3 +190,30 @@ export function segmentToCircleMinDistance(
   // Return the distance to the circle (subtract radius from distance to center)
   return Math.max(0, distToCenter - circle.radius)
 }
+
+export function pointToSegmentClosestPoint(
+  p: Point,
+  a: Point,
+  b: Point,
+): Point {
+  const dx_ab = b.x - a.x
+  const dy_ab = b.y - a.y
+  const l2 = dx_ab * dx_ab + dy_ab * dy_ab
+
+  if (l2 === 0) return { x: a.x, y: a.y } // Segment is a point
+
+  // Project p onto the line defined by a, b
+  // t = [(p - a) . (b - a)] / |b - a|^2
+  let t = ((p.x - a.x) * dx_ab + (p.y - a.y) * dy_ab) / l2
+
+  // Clamp t to the range [0, 1] to stay on the segment
+  t = Math.max(0, Math.min(1, t))
+
+  // Calculate the projection point
+  const closestPoint = {
+    x: a.x + t * dx_ab,
+    y: a.y + t * dy_ab,
+  }
+
+  return closestPoint
+}

@@ -57,3 +57,9 @@ export function midpoint(p1: Point, p2: Point): Point {
     y: (p1.y + p2.y) / 2,
   }
 }
+
+export function distSq(p1: Point, p2: Point): number {
+  const dx = p1.x - p2.x
+  const dy = p1.y - p2.y
+  return dx * dx + dy * dy
+}
