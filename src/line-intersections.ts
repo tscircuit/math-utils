@@ -122,3 +122,53 @@ export function distance(p1: Point, p2: Point): number {
   const dy = p1.y - p2.y
   return Math.sqrt(dx * dx + dy * dy)
 }
+
+/**
+ * Calculates the intersection point of two line segments.
+ * Returns the intersection point {x, y} if the segments intersect, otherwise returns null.
+ */
+export function getSegmentIntersection(
+  a: Point,
+  b: Point,
+  u: Point,
+  v: Point,
+): Point | null {
+  const dx1 = b.x - a.x
+  const dy1 = b.y - a.y
+  const dx2 = v.x - u.x
+  const dy2 = v.y - u.y
+  const dx3 = a.x - u.x
+  const dy3 = a.y - u.y
+
+  const denominator = dx1 * dy2 - dy1 * dx2
+
+  // Check if lines are parallel or collinear
+  if (Math.abs(denominator) < 1e-10) {
+    // Lines are parallel or collinear
+    // We could add checks for collinear overlapping segments if needed,
+    // but for now, we return null as a single intersection point doesn't exist.
+    // The doSegmentsIntersect function handles collinearity checks if only a boolean is needed.
+    return null
+  }
+
+  // Correct formula for t (parameter for segment ab)
+  // t = (dy3 * dx2 - dx3 * dy2) / denominator
+  // The formula previously used was -(dy3 * dx2 - dx3 * dy2) / denominator
+  const t = (dy3 * dx2 - dx3 * dy2) / denominator
+  // Correct formula for s (parameter for segment uv)
+  // s = (dx1 * dy3 - dy1 * dx3) / denominator
+  // The formula previously used was incorrect.
+  const s = (dx1 * dy3 - dy1 * dx3) / denominator
+
+  // Check if the intersection point lies within both segments
+  // Use a small epsilon for floating point comparisons near 0 and 1
+  const epsilon = 1e-9
+  if (t >= -epsilon && t <= 1 + epsilon && s >= -epsilon && s <= 1 + epsilon) {
+    const intersectionX = a.x + t * dx1
+    const intersectionY = a.y + t * dy1
+    return { x: intersectionX, y: intersectionY }
+  }
+
+  // Segments do not intersect within their bounds
+  return null
+}
