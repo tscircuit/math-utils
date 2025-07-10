@@ -6,6 +6,7 @@ This repository contains a collection of TypeScript utility functions for geomet
 
 - Line intersection detection
 - Segment intersection detection
+- Segment-rectangle intersection detection
 - Point-to-segment distance calculation
 - Orientation of points
 - Distance between points
@@ -46,6 +47,10 @@ Determines if two lines intersect, optionally considering line thickness.
 ### `doSegmentsIntersect(p1: Point, q1: Point, p2: Point, q2: Point): boolean`
 
 Checks if two line segments intersect.
+
+### `doesSegmentIntersectRect(a: Point, b: Point, rect: { minX: number; minY: number; maxX: number; maxY: number }): boolean`
+
+Checks if a line segment intersects an axis-aligned rectangle.
 
 ### `orientation(p: Point, q: Point, r: Point): number`
 
