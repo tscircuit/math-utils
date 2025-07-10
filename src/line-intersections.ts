@@ -172,3 +172,28 @@ export function getSegmentIntersection(
   // Segments do not intersect within their bounds
   return null
 }
+
+export function doesSegmentIntersectRect(
+  a: Point,
+  b: Point,
+  rect: { minX: number; minY: number; maxX: number; maxY: number },
+): boolean {
+  const pointInside = (p: Point) =>
+    p.x >= rect.minX && p.x <= rect.maxX && p.y >= rect.minY && p.y <= rect.maxY
+
+  if (pointInside(a) || pointInside(b)) {
+    return true
+  }
+
+  const topLeft = { x: rect.minX, y: rect.minY }
+  const topRight = { x: rect.maxX, y: rect.minY }
+  const bottomLeft = { x: rect.minX, y: rect.maxY }
+  const bottomRight = { x: rect.maxX, y: rect.maxY }
+
+  return (
+    doSegmentsIntersect(a, b, topLeft, topRight) ||
+    doSegmentsIntersect(a, b, topRight, bottomRight) ||
+    doSegmentsIntersect(a, b, bottomRight, bottomLeft) ||
+    doSegmentsIntersect(a, b, bottomLeft, topLeft)
+  )
+}
