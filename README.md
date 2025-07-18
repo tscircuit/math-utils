@@ -40,33 +40,32 @@ console.log("Lines intersect:", intersects)
 
 ## API Reference
 
-### `doesLineIntersectLine(line1: [Point, Point], line2: [Point, Point], options?: { lineThickness?: number }): boolean`
-
-Determines if two lines intersect, optionally considering line thickness.
-
-### `doSegmentsIntersect(p1: Point, q1: Point, p2: Point, q2: Point): boolean`
-
-Checks if two line segments intersect.
-
-### `doesSegmentIntersectRect(a: Point, b: Point, rect: { minX: number; minY: number; maxX: number; maxY: number }): boolean`
-
-Checks if a line segment intersects an axis-aligned rectangle.
-
-### `orientation(p: Point, q: Point, r: Point): number`
-
-Calculates the orientation of three points.
-
-### `onSegment(p: Point, q: Point, r: Point): boolean`
-
-Checks if point q lies on the segment p-r.
-
-### `pointToSegmentDistance(p: Point, v: Point, w: Point): number`
-
-Calculates the minimum distance between a point and a line segment.
-
-### `distance(p1: Point, p2: Point): number`
-
-Calculates the Euclidean distance between two points.
+| Function | Description |
+| -------- | ----------- |
+| `doesLineIntersectLine(line1, line2, options?)` | Determine if two lines intersect, optionally considering line thickness. |
+| `doSegmentsIntersect(p1, q1, p2, q2)` | Check if two line segments intersect. |
+| `doesSegmentIntersectRect(a, b, rect)` | Check if a segment intersects an axis-aligned rectangle. |
+| `orientation(p, q, r)` | Calculate the orientation of three points. |
+| `onSegment(p, q, r)` | Determine if point `q` lies on the segment `p`–`r`. |
+| `pointToSegmentDistance(p, v, w)` | Minimum distance between a point and a segment. |
+| `distance(p1, p2)` | Euclidean distance between two points. |
+| `getSegmentIntersection(a, b, u, v)` | Intersection point of two segments or `null` if none. |
+| `getBoundingBox(box)` | Compute the bounding box of a box. |
+| `computeDistanceBetweenBoxes(boxA, boxB)` | Minimum distance between two boxes and the nearest points. |
+| `clamp(value, min, max)` | Clamp a value between `min` and `max`. |
+| `findNearestPointsBetweenBoxSets(setA, setB)` | Find nearest points between two sets of boxes. |
+| `getUnitVectorFromPointAToB(a, b)` | Unit vector pointing from point A to B. |
+| `getUnitVectorFromDirection(direction)` | Unit vector for the given cardinal direction. |
+| `grid(options)` | Generate grid cell positions with spacing and offsets. |
+| `segmentToSegmentMinDistance(a, b, u, v)` | Minimum distance between two line segments. |
+| `segmentToBoundsMinDistance(a, b, bounds)` | Minimum distance from a segment to a bounds rectangle. |
+| `segmentToBoxMinDistance(a, b, box)` | Minimum distance from a segment to a box. |
+| `segmentToCircleMinDistance(a, b, circle)` | Minimum distance from a segment to a circle. |
+| `pointToSegmentClosestPoint(p, a, b)` | Closest point on a segment to the given point. |
+| `pointToBoxDistance(p, box)` | Minimum distance from a point to a box. |
+| `pointToBoundsDistance(p, bounds)` | Minimum distance from a point to a bounds rectangle. |
+| `midpoint(p1, p2)` | Midpoint between two points. |
+| `distSq(p1, p2)` | Squared distance between two points. |
 
 ## Contributing
 
