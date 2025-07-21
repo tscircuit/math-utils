@@ -42,30 +42,30 @@ console.log("Lines intersect:", intersects)
 
 | Function | Description |
 | -------- | ----------- |
-| `doesLineIntersectLine(line1, line2, options?)` | Determine if two lines intersect, optionally considering line thickness. |
-| `doSegmentsIntersect(p1, q1, p2, q2)` | Check if two line segments intersect. |
-| `doesSegmentIntersectRect(a, b, rect)` | Check if a segment intersects an axis-aligned rectangle. |
-| `orientation(p, q, r)` | Calculate the orientation of three points. |
-| `onSegment(p, q, r)` | Determine if point `q` lies on the segment `p`–`r`. |
-| `pointToSegmentDistance(p, v, w)` | Minimum distance between a point and a segment. |
-| `distance(p1, p2)` | Euclidean distance between two points. |
-| `getSegmentIntersection(a, b, u, v)` | Intersection point of two segments or `null` if none. |
-| `getBoundingBox(box)` | Compute the bounding box of a box. |
-| `computeDistanceBetweenBoxes(boxA, boxB)` | Minimum distance between two boxes and the nearest points. |
-| `clamp(value, min, max)` | Clamp a value between `min` and `max`. |
-| `findNearestPointsBetweenBoxSets(setA, setB)` | Find nearest points between two sets of boxes. |
-| `getUnitVectorFromPointAToB(a, b)` | Unit vector pointing from point A to B. |
-| `getUnitVectorFromDirection(direction)` | Unit vector for the given cardinal direction. |
-| `grid(options)` | Generate grid cell positions with spacing and offsets. |
-| `segmentToSegmentMinDistance(a, b, u, v)` | Minimum distance between two line segments. |
-| `segmentToBoundsMinDistance(a, b, bounds)` | Minimum distance from a segment to a bounds rectangle. |
-| `segmentToBoxMinDistance(a, b, box)` | Minimum distance from a segment to a box. |
-| `segmentToCircleMinDistance(a, b, circle)` | Minimum distance from a segment to a circle. |
-| `pointToSegmentClosestPoint(p, a, b)` | Closest point on a segment to the given point. |
-| `pointToBoxDistance(p, box)` | Minimum distance from a point to a box. |
-| `pointToBoundsDistance(p, bounds)` | Minimum distance from a point to a bounds rectangle. |
-| `midpoint(p1, p2)` | Midpoint between two points. |
-| `distSq(p1, p2)` | Squared distance between two points. |
+| [`doesLineIntersectLine(line1, line2, options?)`](./src/line-intersections.ts) | Determine if two lines intersect, optionally considering line thickness. |
+| [`doSegmentsIntersect(p1, q1, p2, q2)`](./src/line-intersections.ts) | Check if two line segments intersect. |
+| [`doesSegmentIntersectRect(a, b, rect)`](./src/line-intersections.ts) | Check if a segment intersects an axis-aligned rectangle. |
+| [`orientation(p, q, r)`](./src/line-intersections.ts) | Calculate the orientation of three points. |
+| [`onSegment(p, q, r)`](./src/line-intersections.ts) | Determine if point `q` lies on the segment `p`–`r`. |
+| [`pointToSegmentDistance(p, v, w)`](./src/line-intersections.ts) | Minimum distance between a point and a segment. |
+| [`distance(p1, p2)`](./src/line-intersections.ts) | Euclidean distance between two points. |
+| [`getSegmentIntersection(a, b, u, v)`](./src/line-intersections.ts) | Intersection point of two segments or `null` if none. |
+| [`getBoundingBox(box)`](./src/nearest-box.ts) | Compute the bounding box of a box. |
+| [`computeDistanceBetweenBoxes(boxA, boxB)`](./src/nearest-box.ts) | Minimum distance between two boxes and the nearest points. |
+| [`clamp(value, min, max)`](./src/nearest-box.ts) | Clamp a value between `min` and `max`. |
+| [`findNearestPointsBetweenBoxSets(setA, setB)`](./src/nearest-box.ts) | Find nearest points between two sets of boxes. |
+| [`getUnitVectorFromPointAToB(a, b)`](./src/get-unit-vector.ts) | Unit vector pointing from point A to B. |
+| [`getUnitVectorFromDirection(direction)`](./src/get-unit-vector.ts) | Unit vector for the given cardinal direction. |
+| [`grid(options)`](./src/grid.ts) | Generate grid cell positions with spacing and offsets. |
+| [`segmentToSegmentMinDistance(a, b, u, v)`](./src/segment-distance.ts) | Minimum distance between two line segments. |
+| [`segmentToBoundsMinDistance(a, b, bounds)`](./src/segment-distance.ts) | Minimum distance from a segment to a bounds rectangle. |
+| [`segmentToBoxMinDistance(a, b, box)`](./src/segment-distance.ts) | Minimum distance from a segment to a box. |
+| [`segmentToCircleMinDistance(a, b, circle)`](./src/segment-distance.ts) | Minimum distance from a segment to a circle. |
+| [`pointToSegmentClosestPoint(p, a, b)`](./src/segment-distance.ts) | Closest point on a segment to the given point. |
+| [`pointToBoxDistance(p, box)`](./src/point-distance.ts) | Minimum distance from a point to a box. |
+| [`pointToBoundsDistance(p, bounds)`](./src/point-distance.ts) | Minimum distance from a point to a bounds rectangle. |
+| [`midpoint(p1, p2)`](./src/point-distance.ts) | Midpoint between two points. |
+| [`distSq(p1, p2)`](./src/point-distance.ts) | Squared distance between two points. |
 
 ## Contributing
 
