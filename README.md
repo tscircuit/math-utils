@@ -66,6 +66,7 @@ console.log("Lines intersect:", intersects)
 | [`pointToBoundsDistance(p, bounds)`](./src/point-distance.ts) | Minimum distance from a point to a bounds rectangle. |
 | [`midpoint(p1, p2)`](./src/point-distance.ts) | Midpoint between two points. |
 | [`distSq(p1, p2)`](./src/point-distance.ts) | Squared distance between two points. |
+| [`range(start, end?, step?)`](./src/range.ts) | Create an array of numbers progressing from start up to, but not including, end. |
 
 ## Contributing
 
