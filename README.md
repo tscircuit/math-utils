@@ -67,6 +67,7 @@ console.log("Lines intersect:", intersects)
 | [`midpoint(p1, p2)`](./src/point-distance.ts) | Midpoint between two points. |
 | [`distSq(p1, p2)`](./src/point-distance.ts) | Squared distance between two points. |
 | [`range(start, end?, step?)`](./src/range.ts) | Create an array of numbers progressing from start up to, but not including, end. |
+| [`doBoundsOverlap(bounds1, bounds2)`](./src/bounds-overlap.ts) | Determine if two bounding rectangles overlap. |
 
 ## Contributing
 
