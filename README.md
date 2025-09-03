@@ -10,6 +10,7 @@ This repository contains a collection of TypeScript utility functions for geomet
 - Point-to-segment distance calculation
 - Orientation of points
 - Distance between points
+- Bounds overlap and distance calculations
 
 ## Installation
 
@@ -68,6 +69,8 @@ console.log("Lines intersect:", intersects)
 | [`distSq(p1, p2)`](./src/point-distance.ts) | Squared distance between two points. |
 | [`range(start, end?, step?)`](./src/range.ts) | Create an array of numbers progressing from start up to, but not including, end. |
 | [`doBoundsOverlap(bounds1, bounds2)`](./src/bounds-overlap.ts) | Determine if two bounding rectangles overlap. |
+| [`boundsAreaOverlap(bounds1, bounds2)`](./src/bounds-area-overlap.ts) | Area of overlap between two bounding rectangles. |
+| [`boundsDistance(bounds1, bounds2)`](./src/bounds-distance.ts) | Minimum distance between two bounding rectangles. |
 
 ## Contributing
 
