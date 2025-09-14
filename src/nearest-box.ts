@@ -45,7 +45,7 @@ export function computeDistanceBetweenBoxes(
   return { distance, pointA, pointB }
 }
 
-export function computeDistanceBetweenBoxes(
+export function computeGapBetweenBoxes(
   boxA: Box,
   boxB: Box,
 ): number {
