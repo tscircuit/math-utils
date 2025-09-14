@@ -52,7 +52,7 @@ console.log("Lines intersect:", intersects)
 | [`distance(p1, p2)`](./src/line-intersections.ts) | Euclidean distance between two points. |
 | [`getSegmentIntersection(a, b, u, v)`](./src/line-intersections.ts) | Intersection point of two segments or `null` if none. |
 | [`getBoundingBox(box)`](./src/nearest-box.ts) | Compute the bounding box of a box. |
-| [`computeDistanceBetweenBoxes(boxA, boxB)`](./src/nearest-box.ts) | Minimum distance between two boxes and the nearest points. |
+| [`computeManhattanDistanceBetweenBoxes(boxA, boxB)`](./src/nearest-box.ts) | Minimum Manhattan distance between two boxes and the nearest points. |
 | [`clamp(value, min, max)`](./src/nearest-box.ts) | Clamp a value between `min` and `max`. |
 | [`findNearestPointsBetweenBoxSets(setA, setB)`](./src/nearest-box.ts) | Find nearest points between two sets of boxes. |
 | [`getUnitVectorFromPointAToB(a, b)`](./src/get-unit-vector.ts) | Unit vector pointing from point A to B. |
