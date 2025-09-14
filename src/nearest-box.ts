@@ -45,10 +45,7 @@ export function computeDistanceBetweenBoxes(
   return { distance, pointA, pointB }
 }
 
-export function computeGapBetweenBoxes(
-  boxA: Box,
-  boxB: Box,
-): number {
+export function computeGapBetweenBoxes(boxA: Box, boxB: Box): number {
   const a = getBoundingBox(boxA)
   const b = getBoundingBox(boxB)
 
