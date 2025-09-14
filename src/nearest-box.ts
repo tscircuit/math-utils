@@ -16,7 +16,7 @@ export function getBoundingBox(box: Box) {
   }
 }
 
-export function computeDistanceBetweenBoxes(
+export function computeManhattanDistanceBetweenBoxes(
   boxA: Box,
   boxB: Box,
 ): { distance: number; pointA: Point; pointB: Point } {
@@ -45,6 +45,16 @@ export function computeDistanceBetweenBoxes(
   return { distance, pointA, pointB }
 }
 
+/**
+ * @deprecated Use {@link computeManhattanDistanceBetweenBoxes} instead.
+ */
+export function computeDistanceBetweenBoxes(
+  boxA: Box,
+  boxB: Box,
+): { distance: number; pointA: Point; pointB: Point } {
+  return computeManhattanDistanceBetweenBoxes(boxA, boxB)
+}
+
 export function computeGapBetweenBoxes(boxA: Box, boxB: Box): number {
   const a = getBoundingBox(boxA)
   const b = getBoundingBox(boxB)
@@ -70,7 +80,7 @@ export function findNearestPointsBetweenBoxSets(
 
   for (const boxA of boxSetA) {
     for (const boxB of boxSetB) {
-      const { distance, pointA, pointB } = computeDistanceBetweenBoxes(
+      const { distance, pointA, pointB } = computeManhattanDistanceBetweenBoxes(
         boxA,
         boxB,
       )
