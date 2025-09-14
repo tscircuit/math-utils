@@ -45,6 +45,32 @@ export function computeDistanceBetweenBoxes(
   return { distance, pointA, pointB }
 }
 
+function computeGapBetweenBoxes(boxA, boxB) {
+  const a = getBoundingBox(boxA);
+  const b = getBoundingBox(boxB);
+
+  // Compute deltas: separation along each axis (0 if overlapping)
+  const dx = Math.max(a.minX - b.maxX, b.minX - a.maxX, 0);
+  const dy = Math.max(a.minY - b.maxY, b.minY - a.maxY, 0);
+
+  // Closest point on A to B
+  const pointA = {
+    x: clamp(b.center.x, a.minX, a.maxX),
+    y: clamp(b.center.y, a.minY, a.maxY),
+  };
+
+  // Closest point on B to A
+  const pointB = {
+    x: clamp(a.center.x, b.minX, b.maxX),
+    y: clamp(a.center.y, b.minY, b.maxY),
+  };
+
+  // True gap distance
+  const distance = Math.hypot(dx, dy);
+
+  return { distance, pointA, pointB };
+}
+
 export function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value))
 }
