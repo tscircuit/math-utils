@@ -45,6 +45,17 @@ export function computeDistanceBetweenBoxes(
   return { distance, pointA, pointB }
 }
 
+export function computeGapBetweenBoxes(boxA: Box, boxB: Box): number {
+  const a = getBoundingBox(boxA)
+  const b = getBoundingBox(boxB)
+
+  const dx = Math.max(a.minX - b.maxX, b.minX - a.maxX, 0)
+  const dy = Math.max(a.minY - b.maxY, b.minY - a.maxY, 0)
+
+  const distance = Math.hypot(dx, dy)
+  return distance
+}
+
 export function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value))
 }
