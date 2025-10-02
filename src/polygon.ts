@@ -1,14 +1,23 @@
-import type { Bounds, Point, Rect } from "./common"
+import type { Bounds, Point, UniversalRect } from "./common"
 import { doSegmentsIntersect } from "./line-intersections"
 
 export type Polygon = readonly Point[]
 
-const rectToBounds = (rect: Rect): Bounds => ({
-  minX: rect.x,
-  minY: rect.y,
-  maxX: rect.x + rect.width,
-  maxY: rect.y + rect.height,
-})
+const universalRectToBounds = (rect: UniversalRect): Bounds => {
+  if ("minX" in rect) {
+    return rect
+  }
+
+  const halfWidth = rect.width / 2
+  const halfHeight = rect.height / 2
+
+  return {
+    minX: rect.center.x - halfWidth,
+    minY: rect.center.y - halfHeight,
+    maxX: rect.center.x + halfWidth,
+    maxY: rect.center.y + halfHeight,
+  }
+}
 
 const getBoundsCorners = (bounds: Bounds): Point[] => [
   { x: bounds.minX, y: bounds.minY },
@@ -146,11 +155,12 @@ export const areBoundsCompletelyInsidePolygon = (
 }
 
 export const isRectOverlappingPolygon = (
-  rect: Rect,
+  rect: UniversalRect,
   polygon: Polygon,
-): boolean => areBoundsOverlappingPolygon(rectToBounds(rect), polygon)
+): boolean => areBoundsOverlappingPolygon(universalRectToBounds(rect), polygon)
 
 export const isRectCompletelyInsidePolygon = (
-  rect: Rect,
+  rect: UniversalRect,
   polygon: Polygon,
-): boolean => areBoundsCompletelyInsidePolygon(rectToBounds(rect), polygon)
+): boolean =>
+  areBoundsCompletelyInsidePolygon(universalRectToBounds(rect), polygon)

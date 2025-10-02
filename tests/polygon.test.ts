@@ -7,7 +7,7 @@ import {
   isRectOverlappingPolygon,
   type Bounds,
   type Point,
-  type Rect,
+  type UniversalRect,
 } from "../src"
 
 describe("polygon utilities", () => {
@@ -55,9 +55,17 @@ describe("polygon utilities", () => {
     )
   })
 
-  test("rect convenience wrappers use x/y/width/height format", () => {
-    const rectInside: Rect = { x: 1, y: 1, width: 2, height: 2 }
-    const rectCross: Rect = { x: 7, y: 7, width: 4, height: 4 }
+  test("rect convenience wrappers accept center/width/height format", () => {
+    const rectInside: UniversalRect = {
+      center: { x: 3, y: 3 },
+      width: 4,
+      height: 4,
+    }
+    const rectCross: UniversalRect = {
+      center: { x: 8.5, y: 8.5 },
+      width: 5,
+      height: 5,
+    }
 
     expect(isRectCompletelyInsidePolygon(rectInside, square)).toBe(true)
     expect(isRectOverlappingPolygon(rectInside, square)).toBe(true)
