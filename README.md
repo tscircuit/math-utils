@@ -71,6 +71,13 @@ console.log("Lines intersect:", intersects)
 | [`doBoundsOverlap(bounds1, bounds2)`](./src/bounds-overlap.ts) | Determine if two bounding rectangles overlap. |
 | [`boundsAreaOverlap(bounds1, bounds2)`](./src/bounds-area-overlap.ts) | Area of overlap between two bounding rectangles. |
 | [`boundsDistance(bounds1, bounds2)`](./src/bounds-distance.ts) | Minimum distance between two bounding rectangles. |
+| [`isPointInsidePolygon(point, polygon)`](./src/polygon.ts) | Determine if a point lies inside a polygon. |
+| [`areBoundsOverlappingPolygon(bounds, polygon)`](./src/polygon.ts) | Check whether bounds intersect or are contained by a polygon. |
+| [`areBoundsCompletelyInsidePolygon(bounds, polygon)`](./src/polygon.ts) | Determine if bounds are fully contained within a polygon. |
+| [`isRectOverlappingPolygon(rect, polygon)`](./src/polygon.ts) | Check whether a rectangle defined by `x`, `y`, `width`, and `height` overlaps a polygon. |
+| [`isRectCompletelyInsidePolygon(rect, polygon)`](./src/polygon.ts) | Determine if a rectangle is fully contained within a polygon. |
+
+`rect` objects are expected to use the `{ x, y, width, height }` convention with `x` and `y` denoting the minimum corner.
 
 ## Contributing
 
