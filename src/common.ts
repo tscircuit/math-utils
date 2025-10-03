@@ -16,3 +16,11 @@ export type Rect = {
   width: number
   height: number
 }
+
+export type UniversalRect =
+  | {
+      center: Point
+      width: number
+      height: number
+    }
+  | Bounds

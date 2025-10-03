@@ -74,10 +74,10 @@ console.log("Lines intersect:", intersects)
 | [`isPointInsidePolygon(point, polygon)`](./src/polygon.ts) | Determine if a point lies inside a polygon. |
 | [`areBoundsOverlappingPolygon(bounds, polygon)`](./src/polygon.ts) | Check whether bounds intersect or are contained by a polygon. |
 | [`areBoundsCompletelyInsidePolygon(bounds, polygon)`](./src/polygon.ts) | Determine if bounds are fully contained within a polygon. |
-| [`isRectOverlappingPolygon(rect, polygon)`](./src/polygon.ts) | Check whether a rectangle defined by `x`, `y`, `width`, and `height` overlaps a polygon. |
-| [`isRectCompletelyInsidePolygon(rect, polygon)`](./src/polygon.ts) | Determine if a rectangle is fully contained within a polygon. |
+| [`isRectOverlappingPolygon(rect, polygon)`](./src/polygon.ts) | Check whether a rectangle defined by a center point with dimensions or by bounds overlaps a polygon. |
+| [`isRectCompletelyInsidePolygon(rect, polygon)`](./src/polygon.ts) | Determine if a rectangle defined by a center point with dimensions or by bounds is fully contained within a polygon. |
 
-`rect` objects are expected to use the `{ x, y, width, height }` convention with `x` and `y` denoting the minimum corner.
+`rect` objects passed to these helpers can either specify a `center` along with `width` and `height` or provide `Bounds` directly.
 
 ## Contributing
 
