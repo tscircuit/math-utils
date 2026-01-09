@@ -59,7 +59,7 @@ const isPointOnSegment = (point: Point, start: Point, end: Point): boolean => {
   return true
 }
 
-const isPointInsideBounds = (point: Point, bounds: Bounds): boolean =>
+export const isPointInsideBounds = (point: Point, bounds: Bounds): boolean =>
   point.x >= bounds.minX &&
   point.x <= bounds.maxX &&
   point.y >= bounds.minY &&
