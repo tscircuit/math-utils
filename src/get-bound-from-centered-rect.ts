@@ -1,4 +1,4 @@
-import type { Bounds } from "./common"
+import type { Bounds, Point } from "./common"
 
 /**
  * Calculates the bounds of a rectangle given its center point, width, and height.
@@ -6,7 +6,7 @@ import type { Bounds } from "./common"
  * @returns Bounds object containing minX, minY, maxX, maxY
  */
 export const getBoundsFromCenteredRect = (params: {
-  center: { x: number; y: number }
+  center: Point
   width: number
   height: number
 }): Bounds => {
