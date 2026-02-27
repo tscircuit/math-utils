@@ -5,7 +5,7 @@ import type { Bounds, Point } from "./common"
  * @param params Object containing center point (x, y), width, and height of the rectangle
  * @returns Bounds object containing minX, minY, maxX, maxY
  */
-export const getBoundsFromCenteredRect = (params: {
+export const getBoundFromCenteredRect = (params: {
   center: Point
   width: number
   height: number

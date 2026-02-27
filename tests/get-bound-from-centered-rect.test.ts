@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test"
-import { getBoundsFromCenteredRect } from "../src/get-bound-from-centered-rect"
+import { getBoundFromCenteredRect } from "../src/get-bound-from-centered-rect"
 
 test("getBoundFromCenteredRect", () => {
-  const result = getBoundsFromCenteredRect({
+  const result = getBoundFromCenteredRect({
     center: { x: 5, y: 5 },
     width: 4,
     height: 4,
