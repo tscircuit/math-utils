@@ -52,6 +52,7 @@ const isPointOnSegment = (point: Point, start: Point, end: Point): boolean => {
   }
 
   const squaredLength = (end.x - start.x) ** 2 + (end.y - start.y) ** 2
+  if (squaredLength === 0) return false
   if (dot > squaredLength) {
     return false
   }

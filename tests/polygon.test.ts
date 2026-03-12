@@ -55,6 +55,30 @@ describe("polygon utilities", () => {
     )
   })
 
+  test("isPointInsidePolygon handles polygon with closing duplicate point", () => {
+    // A repeated closing point creates a zero-length segment. Previously,
+    // isPointOnSegment returned true for any point against a zero-length segment
+    // (squaredLength=0 skipped the early-exit), toggling the ray-cast count and
+    // flipping inside/outside incorrectly.
+    const squareWithClosingPoint: Point[] = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+      { x: 0, y: 0 }, // closing duplicate — creates a zero-length segment
+    ]
+
+    expect(isPointInsidePolygon({ x: 5, y: 5 }, squareWithClosingPoint)).toBe(
+      true,
+    )
+    expect(isPointInsidePolygon({ x: 20, y: 20 }, squareWithClosingPoint)).toBe(
+      false,
+    )
+    expect(isPointInsidePolygon({ x: -5, y: -5 }, squareWithClosingPoint)).toBe(
+      false,
+    )
+  })
+
   test("rect convenience wrappers accept center/width/height format", () => {
     const rectInside: UniversalRect = {
       center: { x: 3, y: 3 },
