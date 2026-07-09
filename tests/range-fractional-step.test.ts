@@ -5,7 +5,7 @@ import { range } from "../src/range"
 // drift makes range(0, 1, 0.1) emit an extra 11th element (~0.9999999999999999)
 // that is really the excluded end 1.0. The end must stay exclusive: the result
 // should be [0, 0.1, ..., 0.9] with 10 elements.
-test.failing("range with a fractional step keeps the end exclusive", () => {
+test("range with a fractional step keeps the end exclusive", () => {
   const result = range(0, 1, 0.1)
 
   expect(result).toHaveLength(10)
