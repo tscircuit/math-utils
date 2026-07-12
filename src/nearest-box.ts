@@ -34,12 +34,15 @@ export function computeManhattanDistanceBetweenBoxes(
     return { distance: 0, pointA: boxA.center, pointB: boxB.center }
   }
 
-  // Compute the closest points on the edges
-  pointA.x = clamp(boxA.center.x, b.minX, b.maxX)
-  pointA.y = clamp(boxA.center.y, b.minY, b.maxY)
-
-  pointB.x = clamp(boxB.center.x, a.minX, a.maxX)
-  pointB.y = clamp(boxB.center.y, a.minY, a.maxY)
+  // On each axis: if the boxes are separated, the closest points sit on the two
+  // facing edges; if they overlap on that axis, both points share a coordinate
+  // in the overlap so it contributes 0 to the distance.
+  const [pax, pbx] = closestCoordsOnAxis(a.minX, a.maxX, b.minX, b.maxX)
+  const [pay, pby] = closestCoordsOnAxis(a.minY, a.maxY, b.minY, b.maxY)
+  pointA.x = pax
+  pointA.y = pay
+  pointB.x = pbx
+  pointB.y = pby
 
   const distance = Math.hypot(pointA.x - pointB.x, pointA.y - pointB.y)
   return { distance, pointA, pointB }
@@ -68,6 +71,18 @@ export function computeGapBetweenBoxes(boxA: Box, boxB: Box): number {
 
 export function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value))
+}
+
+function closestCoordsOnAxis(
+  aMin: number,
+  aMax: number,
+  bMin: number,
+  bMax: number,
+): [number, number] {
+  if (aMax < bMin) return [aMax, bMin]
+  if (bMax < aMin) return [aMin, bMax]
+  const shared = Math.max(aMin, bMin)
+  return [shared, shared]
 }
 
 export function findNearestPointsBetweenBoxSets(
