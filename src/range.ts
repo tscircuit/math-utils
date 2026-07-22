@@ -14,13 +14,24 @@ export function range(start: number, end?: number, step = 1): number[] {
   const result: number[] = []
 
   if (step > 0) {
-    for (let i = _start; i < _end; i += step) {
-      result.push(i)
+    if (_start >= _end) return []
+    const count = Math.max(0, Math.ceil((_end - _start) / step - 1e-10))
+    for (let k = 0; k < count; k++) {
+      const val = _start + k * step
+      if (val < _end) {
+        result.push(val)
+      }
     }
   } else {
-    for (let i = _start; i > _end; i += step) {
-      result.push(i)
+    if (_start <= _end) return []
+    const count = Math.max(0, Math.ceil((_start - _end) / -step - 1e-10))
+    for (let k = 0; k < count; k++) {
+      const val = _start + k * step
+      if (val > _end) {
+        result.push(val)
+      }
     }
   }
   return result
 }
+

@@ -17,4 +17,10 @@ describe("range", () => {
   test("negative step", () => {
     expect(range(5, 1, -1)).toEqual([5, 4, 3, 2])
   })
+
+  test("fractional step", () => {
+    expect(range(0, 1, 0.1).length).toBe(10)
+    expect(range(0, 3, 0.3).length).toBe(10)
+  })
 })
+
