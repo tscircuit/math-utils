@@ -28,15 +28,12 @@ export function segmentToSegmentMinDistance(
     return 0
   }
 
-  // Compute the minimum distance between the segments
-  const distances = [
-    pointToSegmentDistance(a, u, v),
-    pointToSegmentDistance(b, u, v),
-    pointToSegmentDistance(u, a, b),
-    pointToSegmentDistance(v, a, b),
-  ]
-
-  return Math.min(...distances)
+  // Compute the minimum distance between the segments (no array/spread: this
+  // is the hottest geometry call in dense clearance checking)
+  return Math.min(
+    Math.min(pointToSegmentDistance(a, u, v), pointToSegmentDistance(b, u, v)),
+    Math.min(pointToSegmentDistance(u, a, b), pointToSegmentDistance(v, a, b)),
+  )
 }
 
 /**

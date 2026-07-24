@@ -107,33 +107,39 @@ function segmentsDistance(a1: Point, a2: Point, b1: Point, b2: Point): number {
     return 0
   }
 
-  // Compute the minimum distance between the segments
-  const distances = [
-    pointToSegmentDistance(a1, b1, b2),
-    pointToSegmentDistance(a2, b1, b2),
-    pointToSegmentDistance(b1, a1, a2),
-    pointToSegmentDistance(b2, a1, a2),
-  ]
-
-  return Math.min(...distances)
+  // Compute the minimum distance between the segments (no array/spread: this
+  // runs in the inner loop of clearance checks)
+  return Math.min(
+    Math.min(
+      pointToSegmentDistance(a1, b1, b2),
+      pointToSegmentDistance(a2, b1, b2),
+    ),
+    Math.min(
+      pointToSegmentDistance(b1, a1, a2),
+      pointToSegmentDistance(b2, a1, a2),
+    ),
+  )
 }
 
 /**
  * Returns the minimum distance between a point and a segment.
  */
 export function pointToSegmentDistance(p: Point, v: Point, w: Point): number {
-  const l2 = (w.x - v.x) ** 2 + (w.y - v.y) ** 2
+  // Hot path: called millions of times per autoroute. Arithmetic is identical
+  // to the original formulation; the projection point is kept in locals so no
+  // temporary object is allocated per call.
+  const wx = w.x - v.x
+  const wy = w.y - v.y
+  const l2 = wx ** 2 + wy ** 2
   if (l2 === 0) return distance(p, v)
 
-  let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2
+  let t = ((p.x - v.x) * wx + (p.y - v.y) * wy) / l2
   t = Math.max(0, Math.min(1, t))
 
-  const projection = {
-    x: v.x + t * (w.x - v.x),
-    y: v.y + t * (w.y - v.y),
-  }
+  const dx = p.x - (v.x + t * wx)
+  const dy = p.y - (v.y + t * wy)
 
-  return distance(p, projection)
+  return Math.sqrt(dx * dx + dy * dy)
 }
 
 /**
