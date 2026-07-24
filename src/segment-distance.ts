@@ -7,6 +7,13 @@ import {
 import { clamp } from "./nearest-box"
 
 /**
+ * Squared gap below which two segments are treated as possibly touching, so
+ * the exact intersection predicate decides whether the distance is exactly 0.
+ * (1e-9mm)^2 - far below any PCB feature size.
+ */
+const TOUCHING_GAP_SQ = 1e-18
+
+/**
  * Returns the minimum distance between two line segments.
  */
 export function segmentToSegmentMinDistance(
@@ -23,17 +30,54 @@ export function segmentToSegmentMinDistance(
     return pointToSegmentDistance(u, a, b)
   }
 
-  // Check if segments intersect
-  if (doSegmentsIntersect(a, b, u, v)) {
-    return 0
+  // Closest points between two segments by clamped parametric solve
+  // (Ericson, Real-Time Collision Detection 5.1.9). One sqrt and no
+  // intersection predicate, versus four point-to-segment distances (four
+  // sqrts) plus four orientation tests in the previous formulation.
+  const d1x = b.x - a.x
+  const d1y = b.y - a.y
+  const d2x = v.x - u.x
+  const d2y = v.y - u.y
+  const rx = a.x - u.x
+  const ry = a.y - u.y
+
+  const segment1LengthSq = d1x * d1x + d1y * d1y
+  const segment2LengthSq = d2x * d2x + d2y * d2y
+  const f = d2x * rx + d2y * ry
+  const c = d1x * rx + d1y * ry
+  const dot12 = d1x * d2x + d1y * d2y
+
+  let s: number
+  let t: number
+  const denom = segment1LengthSq * segment2LengthSq - dot12 * dot12
+  if (denom !== 0) {
+    s = clamp((dot12 * f - c * segment2LengthSq) / denom, 0, 1)
+  } else {
+    // parallel or colinear: any point on segment 1 is as good a starting guess
+    s = 0
   }
 
-  // Compute the minimum distance between the segments (no array/spread: this
-  // is the hottest geometry call in dense clearance checking)
-  return Math.min(
-    Math.min(pointToSegmentDistance(a, u, v), pointToSegmentDistance(b, u, v)),
-    Math.min(pointToSegmentDistance(u, a, b), pointToSegmentDistance(v, a, b)),
-  )
+  t = (dot12 * s + f) / segment2LengthSq
+  if (t < 0) {
+    t = 0
+    s = clamp(-c / segment1LengthSq, 0, 1)
+  } else if (t > 1) {
+    t = 1
+    s = clamp((dot12 - c) / segment1LengthSq, 0, 1)
+  }
+
+  const dx = a.x + d1x * s - (u.x + d2x * t)
+  const dy = a.y + d1y * s - (u.y + d2y * t)
+  const gapSq = dx * dx + dy * dy
+
+  // Preserve the exact-zero contract for genuinely intersecting segments:
+  // the parametric solve lands within rounding dust of zero there, and
+  // callers may compare against 0. The predicate only runs in that rare case.
+  if (gapSq <= TOUCHING_GAP_SQ) {
+    return doSegmentsIntersect(a, b, u, v) ? 0 : Math.sqrt(gapSq)
+  }
+
+  return Math.sqrt(gapSq)
 }
 
 /**

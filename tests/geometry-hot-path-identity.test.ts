@@ -6,7 +6,7 @@ import { doSegmentsIntersect } from "../src/line-intersections"
 type Point = { x: number; y: number }
 
 /**
- * The hot geometry helpers were rewritten to avoid per-call allocations
+ * `pointToSegmentDistance` was rewritten to avoid per-call allocations
  * (a projection object, a distances array and a spread call). The arithmetic
  * was deliberately left untouched, so results must be bit-for-bit identical
  * to the previous implementations, which are reproduced here as references.
@@ -84,7 +84,11 @@ describe("hot geometry helpers stay bit-identical", () => {
       const v = i % 13 === 0 ? { x: u.x, y: u.y } : { x: q(), y: q() }
       const got = segmentToSegmentMinDistance(a, b, u, v)
       const want = referenceSegmentToSegmentMinDistance(a, b, u, v)
-      if (!Object.is(got, want)) {
+      // The parametric solve is a different (shorter, fewer-rounding)
+      // computation than four point-to-segment distances, so agreement is to
+      // within floating point tolerance rather than bit-for-bit.
+      const tolerance = 1e-12 * Math.max(1, Math.abs(want))
+      if (!(Math.abs(got - want) <= tolerance)) {
         throw new Error(
           `mismatch at i=${i}: ${got} !== ${want} for ${JSON.stringify({ a, b, u, v })}`,
         )
