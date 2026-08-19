@@ -2,6 +2,10 @@
   "name": "@tscircuit/math-utils",
   "main": "dist/index.js",
   "version": "0.0.36",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tscircuit/math-utils.git"
+  },
   "type": "module",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
