@@ -48,11 +48,33 @@ export function doSegmentsIntersect(
 }
 
 /**
+ * Relative tolerance used to decide that three points are colinear.
+ *
+ * The cross product below is a difference of two products of nearly equal
+ * magnitude. For colinear (or nearly colinear) input the true value is zero
+ * and the computed value is pure floating point cancellation dust whose
+ * *sign* is meaningless. Trusting that sign makes `doSegmentsIntersect`
+ * report disjoint colinear segments as intersecting, which in turn makes
+ * `segmentToSegmentMinDistance` (and every clearance check built on it)
+ * return 0 for segments that are nowhere near each other.
+ *
+ * 1e-12 sits ~4 orders of magnitude above the worst case cancellation error
+ * of IEEE-754 doubles (~2.2e-16 relative) and far below any geometrically
+ * meaningful area, so genuine crossings are unaffected.
+ */
+const COLINEAR_RELATIVE_EPSILON = 1e-12
+
+/**
  * Returns 0 if the points are colinear, 1 if they are clockwise, and 2 if they are counterclockwise.
  */
 export function orientation(p: Point, q: Point, r: Point): number {
-  const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y)
-  if (val === 0) return 0 // colinear
+  const term1 = (q.y - p.y) * (r.x - q.x)
+  const term2 = (q.x - p.x) * (r.y - q.y)
+  const val = term1 - term2
+  const absTerm1 = Math.abs(term1)
+  const absTerm2 = Math.abs(term2)
+  const scale = absTerm1 > absTerm2 ? absTerm1 : absTerm2
+  if (Math.abs(val) <= COLINEAR_RELATIVE_EPSILON * scale) return 0 // colinear
   return val > 0 ? 1 : 2 // clock or counterclock wise
 }
 
@@ -85,33 +107,39 @@ function segmentsDistance(a1: Point, a2: Point, b1: Point, b2: Point): number {
     return 0
   }
 
-  // Compute the minimum distance between the segments
-  const distances = [
-    pointToSegmentDistance(a1, b1, b2),
-    pointToSegmentDistance(a2, b1, b2),
-    pointToSegmentDistance(b1, a1, a2),
-    pointToSegmentDistance(b2, a1, a2),
-  ]
-
-  return Math.min(...distances)
+  // Compute the minimum distance between the segments (no array/spread: this
+  // runs in the inner loop of clearance checks)
+  return Math.min(
+    Math.min(
+      pointToSegmentDistance(a1, b1, b2),
+      pointToSegmentDistance(a2, b1, b2),
+    ),
+    Math.min(
+      pointToSegmentDistance(b1, a1, a2),
+      pointToSegmentDistance(b2, a1, a2),
+    ),
+  )
 }
 
 /**
  * Returns the minimum distance between a point and a segment.
  */
 export function pointToSegmentDistance(p: Point, v: Point, w: Point): number {
-  const l2 = (w.x - v.x) ** 2 + (w.y - v.y) ** 2
+  // Hot path: called millions of times per autoroute. Arithmetic is identical
+  // to the original formulation; the projection point is kept in locals so no
+  // temporary object is allocated per call.
+  const wx = w.x - v.x
+  const wy = w.y - v.y
+  const l2 = wx ** 2 + wy ** 2
   if (l2 === 0) return distance(p, v)
 
-  let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2
+  let t = ((p.x - v.x) * wx + (p.y - v.y) * wy) / l2
   t = Math.max(0, Math.min(1, t))
 
-  const projection = {
-    x: v.x + t * (w.x - v.x),
-    y: v.y + t * (w.y - v.y),
-  }
+  const dx = p.x - (v.x + t * wx)
+  const dy = p.y - (v.y + t * wy)
 
-  return distance(p, projection)
+  return Math.sqrt(dx * dx + dy * dy)
 }
 
 /**
