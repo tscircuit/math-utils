@@ -48,11 +48,33 @@ export function doSegmentsIntersect(
 }
 
 /**
+ * Relative tolerance used to decide that three points are colinear.
+ *
+ * The cross product below is a difference of two products of nearly equal
+ * magnitude. For colinear (or nearly colinear) input the true value is zero
+ * and the computed value is pure floating point cancellation dust whose
+ * *sign* is meaningless. Trusting that sign makes `doSegmentsIntersect`
+ * report disjoint colinear segments as intersecting, which in turn makes
+ * `segmentToSegmentMinDistance` (and every clearance check built on it)
+ * return 0 for segments that are nowhere near each other.
+ *
+ * 1e-12 sits ~4 orders of magnitude above the worst case cancellation error
+ * of IEEE-754 doubles (~2.2e-16 relative) and far below any geometrically
+ * meaningful area, so genuine crossings are unaffected.
+ */
+const COLINEAR_RELATIVE_EPSILON = 1e-12
+
+/**
  * Returns 0 if the points are colinear, 1 if they are clockwise, and 2 if they are counterclockwise.
  */
 export function orientation(p: Point, q: Point, r: Point): number {
-  const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y)
-  if (val === 0) return 0 // colinear
+  const term1 = (q.y - p.y) * (r.x - q.x)
+  const term2 = (q.x - p.x) * (r.y - q.y)
+  const val = term1 - term2
+  const absTerm1 = Math.abs(term1)
+  const absTerm2 = Math.abs(term2)
+  const scale = absTerm1 > absTerm2 ? absTerm1 : absTerm2
+  if (Math.abs(val) <= COLINEAR_RELATIVE_EPSILON * scale) return 0 // colinear
   return val > 0 ? 1 : 2 // clock or counterclock wise
 }
 
