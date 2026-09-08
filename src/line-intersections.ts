@@ -64,7 +64,8 @@ export function onSegment(p: Point, q: Point, r: Point): boolean {
     q.x <= Math.max(p.x, r.x) &&
     q.x >= Math.min(p.x, r.x) &&
     q.y <= Math.max(p.y, r.y) &&
-    q.y >= Math.min(p.y, r.y)
+    q.y >= Math.min(p.y, r.y) &&
+    orientation(p, q, r) === 0
   )
 }
 
