@@ -1,4 +1,5 @@
 import type { Bounds, Point } from "./common"
+import { average } from "./average"
 
 /**
  * Calculates the center point of a bounds rectangle.
@@ -6,6 +7,6 @@ import type { Bounds, Point } from "./common"
  * @returns Center point of the bounds
  */
 export const getBoundsCenter = (bounds: Bounds): Point => ({
-  x: (bounds.minX + bounds.maxX) / 2,
-  y: (bounds.minY + bounds.maxY) / 2,
+  x: average(bounds.minX, bounds.maxX),
+  y: average(bounds.minY, bounds.maxY),
 })
