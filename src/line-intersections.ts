@@ -141,9 +141,10 @@ export function getSegmentIntersection(
   const dy3 = a.y - u.y
 
   const denominator = dx1 * dy2 - dy1 * dx2
+  const denominatorScale = Math.abs(dx1 * dy2) + Math.abs(dy1 * dx2)
 
   // Check if lines are parallel or collinear
-  if (Math.abs(denominator) < 1e-10) {
+  if (Math.abs(denominator) <= Number.EPSILON * denominatorScale) {
     // Lines are parallel or collinear
     // We could add checks for collinear overlapping segments if needed,
     // but for now, we return null as a single intersection point doesn't exist.
