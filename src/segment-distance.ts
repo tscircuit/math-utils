@@ -198,22 +198,25 @@ export function pointToSegmentClosestPoint(
 ): Point {
   const dx_ab = b.x - a.x
   const dy_ab = b.y - a.y
-  const l2 = dx_ab * dx_ab + dy_ab * dy_ab
+  const scale = Math.max(Math.abs(dx_ab), Math.abs(dy_ab))
 
-  if (l2 === 0) return { x: a.x, y: a.y } // Segment is a point
+  if (scale === 0) return { x: a.x, y: a.y } // Segment is a point
 
-  // Project p onto the line defined by a, b
-  // t = [(p - a) . (b - a)] / |b - a|^2
-  let t = ((p.x - a.x) * dx_ab + (p.y - a.y) * dy_ab) / l2
+  // Scale the direction before squaring to avoid overflow and underflow.
+  const dx = dx_ab / scale
+  const dy = dy_ab / scale
+  const lengthSquared = dx * dx + dy * dy
 
-  // Clamp t to the range [0, 1] to stay on the segment
-  t = Math.max(0, Math.min(1, t))
+  // Divide each direction component before summing to avoid overflowing an
+  // interior projection. Projection is measured along (dx, dy).
+  const projection =
+    (p.x - a.x) * (dx / lengthSquared) + (p.y - a.y) * (dy / lengthSquared)
 
-  // Calculate the projection point
-  const closestPoint = {
-    x: a.x + t * dx_ab,
-    y: a.y + t * dy_ab,
+  if (projection <= 0) return { x: a.x, y: a.y }
+  if (projection >= scale) return { x: b.x, y: b.y }
+
+  return {
+    x: a.x + projection * dx,
+    y: a.y + projection * dy,
   }
-
-  return closestPoint
 }
