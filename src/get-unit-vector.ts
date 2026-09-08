@@ -6,7 +6,7 @@ export const getUnitVectorFromPointAToB = (a: Point, b: Point): Point => {
     y: b.y - a.y,
   }
 
-  const magnitude = Math.sqrt(delta.x ** 2 + delta.y ** 2)
+  const magnitude = Math.hypot(delta.x, delta.y)
 
   return {
     x: delta.x / magnitude,
