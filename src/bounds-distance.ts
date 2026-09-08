@@ -21,5 +21,5 @@ export const boundsDistance = (bounds1: Bounds, bounds2: Bounds): number => {
         ? bounds1.minY - bounds2.maxY
         : 0
 
-  return Math.sqrt(dx * dx + dy * dy)
+  return Math.hypot(dx, dy)
 }
