@@ -37,22 +37,33 @@ const getPolygonEdges = (polygon: Polygon): Array<[Point, Point]> => {
 }
 
 const isPointOnSegment = (point: Point, start: Point, end: Point): boolean => {
-  const cross =
-    (point.y - start.y) * (end.x - start.x) -
-    (point.x - start.x) * (end.y - start.y)
-  if (Math.abs(cross) > 1e-9) {
+  const dx = end.x - start.x
+  const dy = end.y - start.y
+  const squaredLength = dx ** 2 + dy ** 2
+  if (squaredLength === 0) return false
+
+  const cross = (point.y - start.y) * dx - (point.x - start.x) * dy
+  const roundoffTolerance =
+    8 *
+    Number.EPSILON *
+    (Math.max(Math.abs(start.x), Math.abs(end.x), Math.abs(point.x)) *
+      Math.abs(dy) +
+      Math.max(Math.abs(start.y), Math.abs(end.y), Math.abs(point.y)) *
+        Math.abs(dx))
+  // Shrink the tolerance for short edges, allowing for rounded coordinates.
+  const crossTolerance = Math.min(
+    1e-9,
+    Math.max(1e-9 * squaredLength, roundoffTolerance),
+  )
+  if (Math.abs(cross) > crossTolerance) {
     return false
   }
 
-  const dot =
-    (point.x - start.x) * (end.x - start.x) +
-    (point.y - start.y) * (end.y - start.y)
+  const dot = (point.x - start.x) * dx + (point.y - start.y) * dy
   if (dot < 0) {
     return false
   }
 
-  const squaredLength = (end.x - start.x) ** 2 + (end.y - start.y) ** 2
-  if (squaredLength === 0) return false
   if (dot > squaredLength) {
     return false
   }
