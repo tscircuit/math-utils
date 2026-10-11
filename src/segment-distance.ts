@@ -5,6 +5,26 @@ import {
   pointToSegmentDistance,
 } from "./line-intersections"
 import { clamp } from "./nearest-box"
+import { distSq } from "./point-distance"
+
+function pointToSegmentDistanceSquared(
+  p: Point,
+  v: Point,
+  w: Point,
+): number {
+  const l2 = (w.x - v.x) ** 2 + (w.y - v.y) ** 2
+  if (l2 === 0) return distSq(p, v)
+
+  let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2
+  t = Math.max(0, Math.min(1, t))
+
+  const projection = {
+    x: v.x + t * (w.x - v.x),
+    y: v.y + t * (w.y - v.y),
+  }
+
+  return distSq(p, projection)
+}
 
 /**
  * Returns the minimum distance between two line segments.
@@ -28,15 +48,15 @@ export function segmentToSegmentMinDistance(
     return 0
   }
 
-  // Compute the minimum distance between the segments
-  const distances = [
-    pointToSegmentDistance(a, u, v),
-    pointToSegmentDistance(b, u, v),
-    pointToSegmentDistance(u, a, b),
-    pointToSegmentDistance(v, a, b),
-  ]
-
-  return Math.min(...distances)
+  // Square root is monotone, so only the minimum squared distance needs it.
+  return Math.sqrt(
+    Math.min(
+      pointToSegmentDistanceSquared(a, u, v),
+      pointToSegmentDistanceSquared(b, u, v),
+      pointToSegmentDistanceSquared(u, a, b),
+      pointToSegmentDistanceSquared(v, a, b),
+    ),
+  )
 }
 
 /**
@@ -80,10 +100,10 @@ export function segmentToBoundsMinDistance(
 
   // If not intersecting, calculate the minimum distance
   const distances = [
-    pointToSegmentDistance(topLeft, a, b),
-    pointToSegmentDistance(topRight, a, b),
-    pointToSegmentDistance(bottomLeft, a, b),
-    pointToSegmentDistance(bottomRight, a, b),
+    pointToSegmentDistanceSquared(topLeft, a, b),
+    pointToSegmentDistanceSquared(topRight, a, b),
+    pointToSegmentDistanceSquared(bottomLeft, a, b),
+    pointToSegmentDistanceSquared(bottomRight, a, b),
   ]
 
   // If one of the segment endpoints is inside the bounds, we need to consider its distance to the bounds as 0
@@ -114,7 +134,7 @@ export function segmentToBoundsMinDistance(
   ) {
     const closestX = clamp(a.x, bounds.minX, bounds.maxX)
     const closestY = clamp(a.y, bounds.minY, bounds.maxY)
-    distances.push(distance(a, { x: closestX, y: closestY }))
+    distances.push(distSq(a, { x: closestX, y: closestY }))
   }
 
   if (
@@ -125,10 +145,10 @@ export function segmentToBoundsMinDistance(
   ) {
     const closestX = clamp(b.x, bounds.minX, bounds.maxX)
     const closestY = clamp(b.y, bounds.minY, bounds.maxY)
-    distances.push(distance(b, { x: closestX, y: closestY }))
+    distances.push(distSq(b, { x: closestX, y: closestY }))
   }
 
-  return Math.min(...distances)
+  return Math.sqrt(Math.min(...distances))
 }
 
 /**
