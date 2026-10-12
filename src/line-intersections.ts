@@ -85,33 +85,34 @@ function segmentsDistance(a1: Point, a2: Point, b1: Point, b2: Point): number {
     return 0
   }
 
-  // Compute the minimum distance between the segments
-  const distances = [
-    pointToSegmentDistance(a1, b1, b2),
-    pointToSegmentDistance(a2, b1, b2),
-    pointToSegmentDistance(b1, a1, a2),
-    pointToSegmentDistance(b2, a1, a2),
-  ]
-
-  return Math.min(...distances)
+  return Math.min(
+    Math.min(
+      pointToSegmentDistance(a1, b1, b2),
+      pointToSegmentDistance(a2, b1, b2),
+    ),
+    Math.min(
+      pointToSegmentDistance(b1, a1, a2),
+      pointToSegmentDistance(b2, a1, a2),
+    ),
+  )
 }
 
 /**
  * Returns the minimum distance between a point and a segment.
  */
 export function pointToSegmentDistance(p: Point, v: Point, w: Point): number {
-  const l2 = (w.x - v.x) ** 2 + (w.y - v.y) ** 2
+  const segmentX = w.x - v.x
+  const segmentY = w.y - v.y
+  const l2 = segmentX ** 2 + segmentY ** 2
   if (l2 === 0) return distance(p, v)
 
-  let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2
+  let t = ((p.x - v.x) * segmentX + (p.y - v.y) * segmentY) / l2
   t = Math.max(0, Math.min(1, t))
 
-  const projection = {
-    x: v.x + t * (w.x - v.x),
-    y: v.y + t * (w.y - v.y),
-  }
+  const distanceX = p.x - (v.x + t * segmentX)
+  const distanceY = p.y - (v.y + t * segmentY)
 
-  return distance(p, projection)
+  return Math.sqrt(distanceX * distanceX + distanceY * distanceY)
 }
 
 /**
