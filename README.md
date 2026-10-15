@@ -71,6 +71,7 @@ console.log("Lines intersect:", intersects)
 | [`doBoundsOverlap(bounds1, bounds2)`](./src/bounds-overlap.ts) | Determine if two bounding rectangles overlap. |
 | [`boundsAreaOverlap(bounds1, bounds2)`](./src/bounds-area-overlap.ts) | Area of overlap between two bounding rectangles. |
 | [`boundsDistance(bounds1, bounds2)`](./src/bounds-distance.ts) | Minimum distance between two bounding rectangles. |
+| [`coverPolygonWithRects(polygon, options)`](./src/cover-polygon-with-rects.ts) | Conservatively cover a simple polygon with axis-aligned rectangles, with bounded side overhang. |
 | [`isPointInsidePolygon(point, polygon)`](./src/polygon.ts) | Determine if a point lies inside a polygon. |
 | [`areBoundsOverlappingPolygon(bounds, polygon)`](./src/polygon.ts) | Check whether bounds intersect or are contained by a polygon. |
 | [`areBoundsCompletelyInsidePolygon(bounds, polygon)`](./src/polygon.ts) | Determine if bounds are fully contained within a polygon. |
@@ -78,6 +79,13 @@ console.log("Lines intersect:", intersects)
 | [`isRectCompletelyInsidePolygon(rect, polygon)`](./src/polygon.ts) | Determine if a rectangle defined by a center point with dimensions or by bounds is fully contained within a polygon. |
 
 `rect` objects passed to these helpers can either specify a `center` along with `width` and `height` or provide `Bounds` directly.
+
+`coverPolygonWithRects` accepts `maxBandHeight` and `maxSideOverhang` in the
+same units as the polygon. It covers the entire interior and boundary, allowing
+bounded overhang along sloping edges. Axis-aligned spans are merged exactly.
+Use it for forbidden regions; it does not compute an inscribed conductive fill.
+The polygon must be a simple ring without holes. Either winding and an optional
+repeated closing vertex are supported.
 
 ## Contributing
 
