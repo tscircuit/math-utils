@@ -12,14 +12,19 @@ export function range(start: number, end?: number, step = 1): number[] {
   }
 
   const result: number[] = []
+  const eps = Math.abs(step) * 1e-9
 
   if (step > 0) {
-    for (let i = _start; i < _end; i += step) {
-      result.push(i)
+    for (let k = 0; ; k++) {
+      const val = _start + k * step
+      if (val >= _end - eps) break
+      result.push(val)
     }
   } else {
-    for (let i = _start; i > _end; i += step) {
-      result.push(i)
+    for (let k = 0; ; k++) {
+      const val = _start + k * step
+      if (val <= _end + eps) break
+      result.push(val)
     }
   }
   return result
