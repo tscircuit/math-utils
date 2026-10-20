@@ -165,3 +165,41 @@ export const isRectCompletelyInsidePolygon = (
   polygon: Polygon,
 ): boolean =>
   areBoundsCompletelyInsidePolygon(universalRectToBounds(rect), polygon)
+
+
+export const getPolygonArea = (polygon: Polygon): number => {
+  if (polygon.length < 3) return 0
+  let area = 0
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    area += (polygon[j].x + polygon[i].x) * (polygon[j].y - polygon[i].y)
+  }
+  return Math.abs(area / 2)
+}
+
+export const getPolygonCentroid = (polygon: Polygon): Point | null => {
+  if (polygon.length < 3) return null
+  let area = 0
+  let cx = 0
+  let cy = 0
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const factor = polygon[j].x * polygon[i].y - polygon[i].x * polygon[j].y
+    area += factor
+    cx += (polygon[j].x + polygon[i].x) * factor
+    cy += (polygon[j].y + polygon[i].y) * factor
+  }
+  area = area / 2
+  if (Math.abs(area) < 1e-9) return null
+  return {
+    x: cx / (6 * area),
+    y: cy / (6 * area),
+  }
+}
+
+export const getPolygonPerimeter = (polygon: Polygon): number => {
+  if (polygon.length < 2) return 0
+  let perimeter = 0
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    perimeter += Math.hypot(polygon[i].x - polygon[j].x, polygon[i].y - polygon[j].y)
+  }
+  return perimeter
+}
