@@ -15,5 +15,9 @@ export const boundsAreaOverlap = (bounds1: Bounds, bounds2: Bounds): number => {
     0,
     Math.min(bounds1.maxY, bounds2.maxY) - Math.max(bounds1.minY, bounds2.minY),
   )
+
+  // A zero-area intersection stays zero even if the other span overflows.
+  if (overlapX === 0 || overlapY === 0) return 0
+
   return overlapX * overlapY
 }
