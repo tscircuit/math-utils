@@ -202,12 +202,21 @@ export function pointToSegmentClosestPoint(
 
   if (scale === 0) return { x: a.x, y: a.y } // Segment is a point
 
-  const dx = dx_ab / scale
-  const dy = dy_ab / scale
+  // Anchor near the query along the dominant axis, so subtracting a distant
+  // endpoint cannot erase a tiny projection. Resolve ties independently of order.
+  const axis = Math.abs(dx_ab) >= Math.abs(dy_ab) ? "x" : "y"
+  const distanceA = Math.abs(p[axis] - a[axis])
+  const distanceB = Math.abs(p[axis] - b[axis])
+  const useB =
+    distanceB < distanceA || (distanceB === distanceA && b[axis] < a[axis])
+  const start = useB ? b : a
+  const end = useB ? a : b
+  const dx = (useB ? -dx_ab : dx_ab) / scale
+  const dy = (useB ? -dy_ab : dy_ab) / scale
   const lengthSquared = dx * dx + dy * dy
 
-  const offsetX = p.x - a.x
-  const offsetY = p.y - a.y
+  const offsetX = p.x - start.x
+  const offsetY = p.y - start.y
   const offsetScale = Math.max(Math.abs(offsetX), Math.abs(offsetY))
 
   // Keep subnormal offsets scaled until each output coordinate is computed,
@@ -216,11 +225,11 @@ export function pointToSegmentClosestPoint(
     const projection =
       ((offsetX / offsetScale) * dx + (offsetY / offsetScale) * dy) /
       lengthSquared
-    if (projection <= 0) return { x: a.x, y: a.y }
-    if (offsetScale * projection >= scale) return { x: b.x, y: b.y }
+    if (projection <= 0) return { x: start.x, y: start.y }
+    if (offsetScale * projection >= scale) return { x: end.x, y: end.y }
     return {
-      x: a.x + offsetScale * (projection * dx),
-      y: a.y + offsetScale * (projection * dy),
+      x: start.x + offsetScale * (projection * dx),
+      y: start.y + offsetScale * (projection * dy),
     }
   }
 
@@ -234,11 +243,11 @@ export function pointToSegmentClosestPoint(
     ? dot / lengthSquared
     : dotX / lengthSquared + dotY / lengthSquared
 
-  if (projection <= 0) return { x: a.x, y: a.y }
-  if (projection >= scale) return { x: b.x, y: b.y }
+  if (projection <= 0) return { x: start.x, y: start.y }
+  if (projection >= scale) return { x: end.x, y: end.y }
 
   return {
-    x: a.x + projection * dx,
-    y: a.y + projection * dy,
+    x: start.x + projection * dx,
+    y: start.y + projection * dy,
   }
 }

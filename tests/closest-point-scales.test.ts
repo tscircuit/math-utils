@@ -96,18 +96,42 @@ describe("closest-point projections across finite coordinate scales", () => {
   })
 
   for (const length of [1, 2 ** -1021]) {
-    test(`a subnormal projection survives on a normal-sized segment ${length}`, () => {
-      const q = Number.MIN_VALUE
-      const p = { x: q, y: q }
-      expect(
-        pointToSegmentClosestPoint(
-          p,
-          { x: 0, y: 0 },
-          { x: 2 * length, y: length },
-        ),
-      ).toEqual(p)
-    })
+    for (const sign of [1, -1]) {
+      for (const reverse of [false, true]) {
+        test(`subnormal projection on normal segment ${length}, sign=${sign}, reverse=${reverse}`, () => {
+          const q = Number.MIN_VALUE
+          const p = { x: q, y: sign * q }
+          const a = { x: 0, y: 0 }
+          const b = { x: 2 * length, y: sign * length }
+          expect(
+            pointToSegmentClosestPoint(p, reverse ? b : a, reverse ? a : b),
+          ).toEqual(p)
+        })
+      }
+    }
   }
+
+  test("tiny axial projections survive reversal despite a large perpendicular offset", () => {
+    const q = Number.MIN_VALUE
+    for (const vertical of [false, true]) {
+      const a = { x: 0, y: 0 }
+      const b = vertical ? { x: 0, y: 2 } : { x: 2, y: 0 }
+      const p = vertical ? { x: 1e160, y: q } : { x: q, y: 1e160 }
+      const want = vertical ? { x: 0, y: q } : { x: q, y: 0 }
+      expect(pointToSegmentClosestPoint(p, a, b)).toEqual(want)
+      expect(pointToSegmentClosestPoint(p, b, a)).toEqual(want)
+    }
+  })
+
+  test("an equidistant origin choice is independent of endpoint order", () => {
+    const q = Number.MIN_VALUE
+    const a = { x: 0, y: 0 }
+    const b = { x: q, y: 2 }
+    const p = { x: 0, y: 1 }
+    const want = { x: 0, y: 1 } // Exact projected x is below q/2 and rounds to zero.
+    expect(pointToSegmentClosestPoint(p, a, b)).toEqual(want)
+    expect(pointToSegmentClosestPoint(p, b, a)).toEqual(want)
+  })
 
   test("subnormal segment still handles an overflowing perpendicular offset ratio", () => {
     const q = Number.MIN_VALUE
