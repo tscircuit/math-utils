@@ -71,6 +71,55 @@ describe("closest-point projections across finite coordinate scales", () => {
     ).toEqual({ x: 2e-170, y: 0 })
   })
 
+  for (const reverse of [false, true]) {
+    for (const sign of [1, -1]) {
+      test(`non-diagonal subnormal projection, reverse=${reverse}, sign=${sign}`, () => {
+        const q = Number.MIN_VALUE
+        const a = { x: 0, y: 0 }
+        const b = { x: 2 * q, y: sign * q }
+        const p = { x: q, y: sign * q }
+        // Exact projection is (6q/5, +/-3q/5); each coordinate rounds to p.
+        expect(
+          pointToSegmentClosestPoint(p, reverse ? b : a, reverse ? a : b),
+        ).toEqual(p)
+      })
+    }
+  }
+
+  test("translated subnormal projection retains the representable result", () => {
+    const q = Number.MIN_VALUE
+    const a = { x: -q, y: 2 * q }
+    const b = { x: q, y: 3 * q }
+    const p = { x: 0, y: 3 * q }
+    expect(pointToSegmentClosestPoint(p, a, b)).toEqual(p)
+    expect(pointToSegmentClosestPoint(p, b, a)).toEqual(p)
+  })
+
+  for (const length of [1, 2 ** -1021]) {
+    test(`a subnormal projection survives on a normal-sized segment ${length}`, () => {
+      const q = Number.MIN_VALUE
+      const p = { x: q, y: q }
+      expect(
+        pointToSegmentClosestPoint(
+          p,
+          { x: 0, y: 0 },
+          { x: 2 * length, y: length },
+        ),
+      ).toEqual(p)
+    })
+  }
+
+  test("subnormal segment still handles an overflowing perpendicular offset ratio", () => {
+    const q = Number.MIN_VALUE
+    expect(
+      pointToSegmentClosestPoint(
+        { x: q, y: 1e308 },
+        { x: 0, y: 0 },
+        { x: 2 * q, y: 0 },
+      ),
+    ).toEqual({ x: q, y: 0 })
+  })
+
   test("large diagonal projection does not overflow its dot-product sum", () => {
     const p = { x: 9e307, y: 9e307 }
     expect(

@@ -205,8 +205,27 @@ export function pointToSegmentClosestPoint(
   const dx = dx_ab / scale
   const dy = dy_ab / scale
   const lengthSquared = dx * dx + dy * dy
-  const dotX = (p.x - a.x) * dx
-  const dotY = (p.y - a.y) * dy
+
+  const offsetX = p.x - a.x
+  const offsetY = p.y - a.y
+  const offsetScale = Math.max(Math.abs(offsetX), Math.abs(offsetY))
+
+  // Keep subnormal offsets scaled until each output coordinate is computed,
+  // avoiding underflow both in the dot product and in its reconstruction.
+  if (offsetScale > 0 && offsetScale < 2 ** -1022) {
+    const projection =
+      ((offsetX / offsetScale) * dx + (offsetY / offsetScale) * dy) /
+      lengthSquared
+    if (projection <= 0) return { x: a.x, y: a.y }
+    if (offsetScale * projection >= scale) return { x: b.x, y: b.y }
+    return {
+      x: a.x + offsetScale * (projection * dx),
+      y: a.y + offsetScale * (projection * dy),
+    }
+  }
+
+  const dotX = offsetX * dx
+  const dotY = offsetY * dy
   const dot = dotX + dotY
 
   // Sum before dividing to preserve subnormal projections. Only divide the
