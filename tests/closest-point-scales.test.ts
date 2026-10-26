@@ -161,6 +161,42 @@ describe("closest-point projections across finite coordinate scales", () => {
     ).toEqual(a)
   })
 
+  test("origin selection does not overflow an otherwise finite diagonal projection", () => {
+    const along = (1e308 - 9e307) / 2
+    for (const sx of [-1, 1]) {
+      for (const sy of [-1, 1]) {
+        const a = { x: 0, y: 0 }
+        const b = { x: sx * 1e308, y: sy * 1e308 }
+        const p = { x: sx * 1e308, y: sy * -9e307 }
+        for (const reverse of [false, true]) {
+          const actual = pointToSegmentClosestPoint(
+            p,
+            reverse ? b : a,
+            reverse ? a : b,
+          )
+          expect(actual.x / along).toBeCloseTo(sx, 12)
+          expect(actual.y / along).toBeCloseTo(sy, 12)
+        }
+      }
+    }
+  })
+
+  test("a vertical-dominant segment also selects finite query offsets", () => {
+    const a = { x: 0, y: 0 }
+    const b = { x: 5e307, y: 1e308 }
+    const p = { x: -1.4e308, y: 1e308 }
+    // Projection onto direction (1,2) is (1.2e307,2.4e307).
+    for (const reverse of [false, true]) {
+      const actual = pointToSegmentClosestPoint(
+        p,
+        reverse ? b : a,
+        reverse ? a : b,
+      )
+      expect(actual.x / 1e307).toBeCloseTo(1.2, 12)
+      expect(actual.y / 1e307).toBeCloseTo(2.4, 12)
+    }
+  })
+
   test("coincident endpoints stay a point and inputs are not mutated", () => {
     const endpoint = Object.freeze({ x: 2, y: -3 })
     const query = Object.freeze({ x: 8, y: 9 })

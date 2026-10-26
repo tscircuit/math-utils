@@ -205,18 +205,28 @@ export function pointToSegmentClosestPoint(
   // Anchor near the query along the dominant axis, so subtracting a distant
   // endpoint cannot erase a tiny projection. Resolve ties independently of order.
   const axis = Math.abs(dx_ab) >= Math.abs(dy_ab) ? "x" : "y"
-  const distanceA = Math.abs(p[axis] - a[axis])
-  const distanceB = Math.abs(p[axis] - b[axis])
+  const offsetAX = p.x - a.x
+  const offsetAY = p.y - a.y
+  const offsetBX = p.x - b.x
+  const offsetBY = p.y - b.y
+  const finiteA = Number.isFinite(offsetAX) && Number.isFinite(offsetAY)
+  const finiteB = Number.isFinite(offsetBX) && Number.isFinite(offsetBY)
+  const distanceA = Math.abs(axis === "x" ? offsetAX : offsetAY)
+  const distanceB = Math.abs(axis === "x" ? offsetBX : offsetBY)
+  // The nearer origin on one axis must not overflow the offset on the other.
   const useB =
-    distanceB < distanceA || (distanceB === distanceA && b[axis] < a[axis])
+    finiteB &&
+    (!finiteA ||
+      distanceB < distanceA ||
+      (distanceB === distanceA && b[axis] < a[axis]))
   const start = useB ? b : a
   const end = useB ? a : b
   const dx = (useB ? -dx_ab : dx_ab) / scale
   const dy = (useB ? -dy_ab : dy_ab) / scale
   const lengthSquared = dx * dx + dy * dy
 
-  const offsetX = p.x - start.x
-  const offsetY = p.y - start.y
+  const offsetX = useB ? offsetBX : offsetAX
+  const offsetY = useB ? offsetBY : offsetAY
   const offsetScale = Math.max(Math.abs(offsetX), Math.abs(offsetY))
 
   // Keep subnormal offsets scaled until each output coordinate is computed,
