@@ -1,0 +1,100 @@
+import { describe, expect, test } from "bun:test"
+import { type Point, pointToSegmentClosestPoint } from "../src"
+
+describe("closest-point projections across finite coordinate scales", () => {
+  for (const scale of [1, 1e160, 1e-170]) {
+    for (const reverse of [false, true]) {
+      test(`axis-aligned projections and clamps at ${scale}, reverse=${reverse}`, () => {
+        for (const vertical of [false, true]) {
+          const point = (along: number, across: number): Point =>
+            vertical
+              ? { x: across * scale, y: along * scale }
+              : { x: along * scale, y: across * scale }
+          const left = point(-2, 3)
+          const right = point(2, 3)
+          const a = reverse ? right : left
+          const b = reverse ? left : right
+
+          for (const [along, expected] of [
+            [0, 0],
+            [-5, -2],
+            [5, 2],
+          ]) {
+            const actual = pointToSegmentClosestPoint(point(along, 8), a, b)
+            const want = point(expected, 3)
+            expect(actual.x / scale).toBeCloseTo(want.x / scale, 12)
+            expect(actual.y / scale).toBeCloseTo(want.y / scale, 12)
+          }
+        }
+      })
+
+      test(`diagonal projection at ${scale}, reverse=${reverse}`, () => {
+        const a = { x: 0, y: 0 }
+        const b = { x: 4 * scale, y: 4 * scale }
+        const p = { x: 2 * scale, y: 4 * scale }
+        const actual = pointToSegmentClosestPoint(
+          p,
+          reverse ? b : a,
+          reverse ? a : b,
+        )
+        expect(actual.x / scale).toBeCloseTo(3, 12)
+        expect(actual.y / scale).toBeCloseTo(3, 12)
+      })
+    }
+  }
+
+  for (const sign of [1, -1]) {
+    for (const reverse of [false, true]) {
+      test(`subnormal diagonal endpoint identity, sign=${sign}, reverse=${reverse}`, () => {
+        const a = { x: 0, y: 0 }
+        const b = { x: Number.MIN_VALUE, y: sign * Number.MIN_VALUE }
+        expect(
+          pointToSegmentClosestPoint(b, reverse ? b : a, reverse ? a : b),
+        ).toEqual(b)
+      })
+
+      test(`subnormal diagonal midpoint identity, sign=${sign}, reverse=${reverse}`, () => {
+        const a = { x: 0, y: 0 }
+        const b = { x: 2 * Number.MIN_VALUE, y: sign * 2 * Number.MIN_VALUE }
+        const p = { x: Number.MIN_VALUE, y: sign * Number.MIN_VALUE }
+        expect(
+          pointToSegmentClosestPoint(p, reverse ? b : a, reverse ? a : b),
+        ).toEqual(p)
+      })
+    }
+  }
+
+  test("a tiny segment ignores a large perpendicular displacement", () => {
+    const p = { x: 2e-170, y: 1e160 }
+    expect(
+      pointToSegmentClosestPoint(p, { x: 0, y: 0 }, { x: 4e-170, y: 0 }),
+    ).toEqual({ x: 2e-170, y: 0 })
+  })
+
+  test("large diagonal projection does not overflow its dot-product sum", () => {
+    const p = { x: 9e307, y: 9e307 }
+    expect(
+      pointToSegmentClosestPoint(p, { x: 0, y: 0 }, { x: 1e308, y: 1e308 }),
+    ).toEqual(p)
+  })
+
+  test("negative overflowing dot product clamps to the original endpoint", () => {
+    const a = { x: 0, y: 0 }
+    expect(
+      pointToSegmentClosestPoint({ x: -9e307, y: -9e307 }, a, {
+        x: 1e308,
+        y: 1e308,
+      }),
+    ).toEqual(a)
+  })
+
+  test("coincident endpoints stay a point and inputs are not mutated", () => {
+    const endpoint = Object.freeze({ x: 2, y: -3 })
+    const query = Object.freeze({ x: 8, y: 9 })
+    expect(pointToSegmentClosestPoint(query, endpoint, endpoint)).toEqual(
+      endpoint,
+    )
+    expect(query).toEqual({ x: 8, y: 9 })
+    expect(endpoint).toEqual({ x: 2, y: -3 })
+  })
+})
