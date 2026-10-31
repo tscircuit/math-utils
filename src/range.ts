@@ -12,15 +12,12 @@ export function range(start: number, end?: number, step = 1): number[] {
   }
 
   const result: number[] = []
+  const count = Math.max(0, Math.ceil((_end - _start) / step))
 
-  if (step > 0) {
-    for (let i = _start; i < _end; i += step) {
-      result.push(i)
-    }
-  } else {
-    for (let i = _start; i > _end; i += step) {
-      result.push(i)
-    }
+  for (let k = 0; k < count; k++) {
+    const value = _start + k * step
+    if (step > 0 ? value >= _end : value <= _end) break
+    result.push(value)
   }
   return result
 }
