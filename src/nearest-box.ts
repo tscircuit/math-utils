@@ -34,12 +34,30 @@ export function computeManhattanDistanceBetweenBoxes(
     return { distance: 0, pointA: boxA.center, pointB: boxB.center }
   }
 
-  // Compute the closest points on the edges
-  pointA.x = clamp(boxA.center.x, b.minX, b.maxX)
-  pointA.y = clamp(boxA.center.y, b.minY, b.maxY)
+  // Compute the closest points on the edges of boxA and boxB
+  if (a.maxX < b.minX) {
+    pointA.x = a.maxX
+    pointB.x = b.minX
+  } else if (b.maxX < a.minX) {
+    pointA.x = a.minX
+    pointB.x = b.maxX
+  } else {
+    const overlapX = (Math.max(a.minX, b.minX) + Math.min(a.maxX, b.maxX)) / 2
+    pointA.x = overlapX
+    pointB.x = overlapX
+  }
 
-  pointB.x = clamp(boxB.center.x, a.minX, a.maxX)
-  pointB.y = clamp(boxB.center.y, a.minY, a.maxY)
+  if (a.maxY < b.minY) {
+    pointA.y = a.maxY
+    pointB.y = b.minY
+  } else if (b.maxY < a.minY) {
+    pointA.y = a.minY
+    pointB.y = b.maxY
+  } else {
+    const overlapY = (Math.max(a.minY, b.minY) + Math.min(a.maxY, b.maxY)) / 2
+    pointA.y = overlapY
+    pointB.y = overlapY
+  }
 
   const distance = Math.hypot(pointA.x - pointB.x, pointA.y - pointB.y)
   return { distance, pointA, pointB }
