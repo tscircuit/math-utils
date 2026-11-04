@@ -79,6 +79,11 @@ console.log("Lines intersect:", intersects)
 
 `rect` objects passed to these helpers can either specify a `center` along with `width` and `height` or provide `Bounds` directly.
 
+Complete polygon containment includes shared edges and touching corners. These
+helpers expect a simple polygon (either winding, with an optional repeated closing
+point); rectangles crossing a concave gap are not completely contained. Zero-width
+or zero-height rectangles are checked as segments or points.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
