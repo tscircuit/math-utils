@@ -15,3 +15,18 @@ test("getBoundFromCenteredRect", () => {
     maxY: 7,
   })
 })
+
+test("getBoundFromCenteredRect preserves each axis", () => {
+  const result = getBoundFromCenteredRect({
+    center: { x: 10, y: -3 },
+    width: 6,
+    height: 2,
+  })
+
+  expect(result).toEqual({
+    minX: 7,
+    maxX: 13,
+    minY: -4,
+    maxY: -2,
+  })
+})
