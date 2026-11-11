@@ -28,6 +28,16 @@ export function doSegmentsIntersect(
   p2: Point,
   q2: Point,
 ): boolean {
+  // Disjoint bounds cannot intersect, even if orientation loses precision.
+  if (
+    Math.max(p1.x, q1.x) < Math.min(p2.x, q2.x) ||
+    Math.max(p2.x, q2.x) < Math.min(p1.x, q1.x) ||
+    Math.max(p1.y, q1.y) < Math.min(p2.y, q2.y) ||
+    Math.max(p2.y, q2.y) < Math.min(p1.y, q1.y)
+  ) {
+    return false
+  }
+
   const o1 = orientation(p1, q1, p2)
   const o2 = orientation(p1, q1, q2)
   const o3 = orientation(p2, q2, p1)

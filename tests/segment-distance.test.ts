@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test"
+import { doSegmentsIntersect } from "../src/line-intersections"
 import {
   segmentToBoundsMinDistance,
   segmentToBoxMinDistance,
@@ -7,6 +8,31 @@ import {
 } from "../src/segment-distance"
 
 describe("segmentToSegmentMinDistance", () => {
+  test("separated ButterStick DDR diagonals keep their distance in either direction", () => {
+    const a = { x: -5.999999999999999, y: -1.5999999999999996 }
+    const b = { x: -1.1764999999999946, y: 3.223500000000005 }
+    const u = { x: -6.799999999999999, y: -2.4 }
+    const v = { x: -6.358000000000001, y: -1.9580000000000024 }
+    const expectedDistance = Math.hypot(a.x - v.x, a.y - v.y)
+
+    for (const [p, q, r, s] of [
+      [a, b, u, v],
+      [b, a, u, v],
+      [a, b, v, u],
+      [b, a, v, u],
+      [u, v, a, b],
+      [v, u, a, b],
+      [u, v, b, a],
+      [v, u, b, a],
+    ]) {
+      expect(segmentToSegmentMinDistance(p, q, r, s)).toBeCloseTo(
+        expectedDistance,
+        12,
+      )
+      expect(doSegmentsIntersect(p, q, r, s)).toBe(false)
+    }
+  })
+
   test("intersecting segments return distance 0", () => {
     const a = { x: 0, y: 0 }
     const b = { x: 10, y: 10 }
