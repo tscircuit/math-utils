@@ -198,22 +198,66 @@ export function pointToSegmentClosestPoint(
 ): Point {
   const dx_ab = b.x - a.x
   const dy_ab = b.y - a.y
-  const l2 = dx_ab * dx_ab + dy_ab * dy_ab
+  const scale = Math.max(Math.abs(dx_ab), Math.abs(dy_ab))
 
-  if (l2 === 0) return { x: a.x, y: a.y } // Segment is a point
+  if (scale === 0) return { x: a.x, y: a.y } // Segment is a point
 
-  // Project p onto the line defined by a, b
-  // t = [(p - a) . (b - a)] / |b - a|^2
-  let t = ((p.x - a.x) * dx_ab + (p.y - a.y) * dy_ab) / l2
+  // Anchor near the query along the dominant axis, so subtracting a distant
+  // endpoint cannot erase a tiny projection. Resolve ties independently of order.
+  const axis = Math.abs(dx_ab) >= Math.abs(dy_ab) ? "x" : "y"
+  const offsetAX = p.x - a.x
+  const offsetAY = p.y - a.y
+  const offsetBX = p.x - b.x
+  const offsetBY = p.y - b.y
+  const finiteA = Number.isFinite(offsetAX) && Number.isFinite(offsetAY)
+  const finiteB = Number.isFinite(offsetBX) && Number.isFinite(offsetBY)
+  const distanceA = Math.abs(axis === "x" ? offsetAX : offsetAY)
+  const distanceB = Math.abs(axis === "x" ? offsetBX : offsetBY)
+  // The nearer origin on one axis must not overflow the offset on the other.
+  const useB =
+    finiteB &&
+    (!finiteA ||
+      distanceB < distanceA ||
+      (distanceB === distanceA && b[axis] < a[axis]))
+  const start = useB ? b : a
+  const end = useB ? a : b
+  const dx = (useB ? -dx_ab : dx_ab) / scale
+  const dy = (useB ? -dy_ab : dy_ab) / scale
+  const lengthSquared = dx * dx + dy * dy
 
-  // Clamp t to the range [0, 1] to stay on the segment
-  t = Math.max(0, Math.min(1, t))
+  const offsetX = useB ? offsetBX : offsetAX
+  const offsetY = useB ? offsetBY : offsetAY
+  const offsetScale = Math.max(Math.abs(offsetX), Math.abs(offsetY))
 
-  // Calculate the projection point
-  const closestPoint = {
-    x: a.x + t * dx_ab,
-    y: a.y + t * dy_ab,
+  // Keep subnormal offsets scaled until each output coordinate is computed,
+  // avoiding underflow both in the dot product and in its reconstruction.
+  if (offsetScale > 0 && offsetScale < 2 ** -1022) {
+    const projection =
+      ((offsetX / offsetScale) * dx + (offsetY / offsetScale) * dy) /
+      lengthSquared
+    if (projection <= 0) return { x: start.x, y: start.y }
+    if (offsetScale * projection >= scale) return { x: end.x, y: end.y }
+    return {
+      x: start.x + offsetScale * (projection * dx),
+      y: start.y + offsetScale * (projection * dy),
+    }
   }
 
-  return closestPoint
+  const dotX = offsetX * dx
+  const dotY = offsetY * dy
+  const dot = dotX + dotY
+
+  // Sum before dividing to preserve subnormal projections. Only divide the
+  // terms separately when the sum overflows, even though its quotient may fit.
+  const projection = Number.isFinite(dot)
+    ? dot / lengthSquared
+    : dotX / lengthSquared + dotY / lengthSquared
+
+  if (projection <= 0) return { x: start.x, y: start.y }
+  if (projection >= scale) return { x: end.x, y: end.y }
+
+  return {
+    x: start.x + projection * dx,
+    y: start.y + projection * dy,
+  }
 }
