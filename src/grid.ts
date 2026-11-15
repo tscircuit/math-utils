@@ -46,8 +46,8 @@ export function grid({
   const centeringOffsetX = centered ? -totalWidth / 2 : 0
   const centeringOffsetY = centered ? -totalHeight / 2 : 0
 
-  const cellWidth = width ? width / cols : effectiveXSpacing
-  const cellHeight = height ? height / rows : effectiveYSpacing
+  const cellWidth = width !== undefined ? width / cols : effectiveXSpacing
+  const cellHeight = height !== undefined ? height / rows : effectiveYSpacing
 
   const cells: GridCellPositions[] = []
 
