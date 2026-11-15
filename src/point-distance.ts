@@ -1,4 +1,5 @@
 import type { Point, Bounds } from "./common"
+import { average } from "./average"
 import { distance } from "./line-intersections"
 import { clamp } from "./nearest-box"
 import type { Box } from "./nearest-box"
@@ -53,8 +54,8 @@ export function pointToBoundsDistance(p: Point, bounds: Bounds): number {
 
 export function midpoint(p1: Point, p2: Point): Point {
   return {
-    x: (p1.x + p2.x) / 2,
-    y: (p1.y + p2.y) / 2,
+    x: average(p1.x, p2.x),
+    y: average(p1.y, p2.y),
   }
 }
 
