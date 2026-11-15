@@ -3,6 +3,9 @@
   "workspaces": {
     "": {
       "name": "@tscircuit/math-utils",
+      "dependencies": {
+        "robust-predicates": "3.0.2",
+      },
       "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@types/bun": "^1.2.18",
@@ -235,6 +238,8 @@
     "readdirp": ["readdirp@4.0.2", "", {}, "sha512-yDMz9g+VaZkqBYS/ozoBJwaBhTbZo3UNYQHNRw1D3UFQB8oHB4uS/tAODO+ZLjGWmUbKnIlOWO+aaIiAxrUWHA=="],
 
     "resolve-from": ["resolve-from@5.0.0", "", {}, "sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw=="],
+
+    "robust-predicates": ["robust-predicates@3.0.2", "", {}, "sha512-IXgzBWvWQwE6PrDI05OvmXUIruQTcoMDzRsOd5CDvHCVLcLHMTSYvOK5Cm46kWqlV3yAbuSpBZdJ5oP5OUoStg=="],
 
     "rollup": ["rollup@4.29.1", "", { "dependencies": { "@types/estree": "1.0.6" }, "optionalDependencies": { "@rollup/rollup-android-arm-eabi": "4.29.1", "@rollup/rollup-android-arm64": "4.29.1", "@rollup/rollup-darwin-arm64": "4.29.1", "@rollup/rollup-darwin-x64": "4.29.1", "@rollup/rollup-freebsd-arm64": "4.29.1", "@rollup/rollup-freebsd-x64": "4.29.1", "@rollup/rollup-linux-arm-gnueabihf": "4.29.1", "@rollup/rollup-linux-arm-musleabihf": "4.29.1", "@rollup/rollup-linux-arm64-gnu": "4.29.1", "@rollup/rollup-linux-arm64-musl": "4.29.1", "@rollup/rollup-linux-loongarch64-gnu": "4.29.1", "@rollup/rollup-linux-powerpc64le-gnu": "4.29.1", "@rollup/rollup-linux-riscv64-gnu": "4.29.1", "@rollup/rollup-linux-s390x-gnu": "4.29.1", "@rollup/rollup-linux-x64-gnu": "4.29.1", "@rollup/rollup-linux-x64-musl": "4.29.1", "@rollup/rollup-win32-arm64-msvc": "4.29.1", "@rollup/rollup-win32-ia32-msvc": "4.29.1", "@rollup/rollup-win32-x64-msvc": "4.29.1", "fsevents": "~2.3.2" }, "bin": "dist/bin/rollup" }, "sha512-RaJ45M/kmJUzSWDs1Nnd5DdV4eerC98idtUOVr6FfKcgxqvjwHmxc5upLF9qZU9EpsVzzhleFahrT3shLuJzIw=="],
 
