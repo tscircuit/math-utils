@@ -30,8 +30,12 @@ export function computeManhattanDistanceBetweenBoxes(
   const pointB: Point = { x: 0, y: 0 }
 
   if (dx === 0 && dy === 0) {
-    // Boxes overlap
-    return { distance: 0, pointA: boxA.center, pointB: boxB.center }
+    // Overlapping or touching boxes share a zero-distance point.
+    pointA.x = Math.max(a.minX, b.minX)
+    pointA.y = Math.max(a.minY, b.minY)
+    pointB.x = pointA.x
+    pointB.y = pointA.y
+    return { distance: 0, pointA, pointB }
   }
 
   // Compute the closest points on the edges
