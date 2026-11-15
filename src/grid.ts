@@ -48,6 +48,7 @@ export function grid({
 
   const cellWidth = width ? width / cols : effectiveXSpacing
   const cellHeight = height ? height / rows : effectiveYSpacing
+  const topDirection = yDirection === "cartesian" ? 1 : -1
 
   const cells: GridCellPositions[] = []
 
@@ -74,11 +75,11 @@ export function grid({
         center: { x: centerX, y: centerY },
         topLeft: {
           x: centerX - cellWidth / 2,
-          y: centerY + cellHeight / 2,
+          y: centerY + (topDirection * cellHeight) / 2,
         },
         bottomRight: {
           x: centerX + cellWidth / 2,
-          y: centerY - cellHeight / 2,
+          y: centerY - (topDirection * cellHeight) / 2,
         },
         row,
         col,
