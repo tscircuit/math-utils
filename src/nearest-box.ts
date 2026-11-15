@@ -34,15 +34,36 @@ export function computeManhattanDistanceBetweenBoxes(
     return { distance: 0, pointA: boxA.center, pointB: boxB.center }
   }
 
-  // Compute the closest points on the edges
-  pointA.x = clamp(boxA.center.x, b.minX, b.maxX)
-  pointA.y = clamp(boxA.center.y, b.minY, b.maxY)
+  // Compute the actual closest points: pointA lands on box A's bounds and
+  // pointB on box B's bounds. On an axis where the ranges overlap the two
+  // points share a coordinate, so the axis contributes nothing to the distance
+  // and a center offset on that axis no longer leaks into the result.
+  const [aX, bX] = closestCoordsBetweenRanges(a.minX, a.maxX, b.minX, b.maxX)
+  const [aY, bY] = closestCoordsBetweenRanges(a.minY, a.maxY, b.minY, b.maxY)
+  pointA.x = aX
+  pointA.y = aY
+  pointB.x = bX
+  pointB.y = bY
 
-  pointB.x = clamp(boxB.center.x, a.minX, a.maxX)
-  pointB.y = clamp(boxB.center.y, a.minY, a.maxY)
-
-  const distance = Math.hypot(pointA.x - pointB.x, pointA.y - pointB.y)
+  const distance = Math.hypot(pointB.x - pointA.x, pointB.y - pointA.y)
   return { distance, pointA, pointB }
+}
+
+/**
+ * Closest pair of coordinates between two 1D ranges: the first lands on range A,
+ * the second on range B. When the ranges overlap both coordinates are the same
+ * (the midpoint of the overlap), so the axis contributes nothing to a distance.
+ */
+function closestCoordsBetweenRanges(
+  aMin: number,
+  aMax: number,
+  bMin: number,
+  bMax: number,
+): [number, number] {
+  if (aMax < bMin) return [aMax, bMin]
+  if (bMax < aMin) return [aMin, bMax]
+  const overlapMidpoint = (Math.max(aMin, bMin) + Math.min(aMax, bMax)) / 2
+  return [overlapMidpoint, overlapMidpoint]
 }
 
 /**
