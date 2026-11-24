@@ -35,11 +35,11 @@ export function computeManhattanDistanceBetweenBoxes(
   }
 
   // Compute the closest points on the edges
-  pointA.x = clamp(boxA.center.x, b.minX, b.maxX)
-  pointA.y = clamp(boxA.center.y, b.minY, b.maxY)
+  pointA.x = clamp(boxB.center.x, a.minX, a.maxX)
+  pointA.y = clamp(boxB.center.y, a.minY, a.maxY)
 
-  pointB.x = clamp(boxB.center.x, a.minX, a.maxX)
-  pointB.y = clamp(boxB.center.y, a.minY, a.maxY)
+  pointB.x = clamp(boxA.center.x, b.minX, b.maxX)
+  pointB.y = clamp(boxA.center.y, b.minY, b.maxY)
 
   const distance = Math.hypot(pointA.x - pointB.x, pointA.y - pointB.y)
   return { distance, pointA, pointB }
